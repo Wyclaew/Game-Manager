@@ -2,21 +2,22 @@
 // Steam ve Epic kütüphanelerini senkronize eder
 
 use crate::sync;
+use crate::error::AppError;
+use std::path::PathBuf;
 
 /// Steam kütüphanesini Web API üzerinden senkronize eder.
 /// Kullanıcının Steam API Key ve SteamID64 bilgilerini gerektirir.
-/// Arka planda çalışır ve UI thread'i engellemez.
 #[tauri::command]
 pub async fn sync_steam_library(
     api_key: String,
     steam_id: String,
-) -> Result<String, String> {
+) -> Result<String, AppError> {
     // Steam Web API'den oyun listesini çek
     let games = sync::steam::fetch_steam_library(&api_key, &steam_id).await?;
 
-    // Oyunları JSON olarak döndür — frontend bunları DB'ye yazacak
+    // Oyunları JSON olarak döndür
     let json = serde_json::to_string(&games)
-        .map_err(|e| format!("JSON serileştirme hatası: {}", e))?;
+        .map_err(|e| AppError::System(format!("JSON serileştirme hatası: {}", e)))?;
 
     Ok(json)
 }
@@ -26,15 +27,32 @@ pub async fn sync_steam_library(
 #[tauri::command]
 pub async fn sync_local_installations(
     steam_path: Option<String>,
-) -> Result<String, String> {
-    // Windows için varsayılan Steam yolu
-    let default_path = "C:\\Program Files (x86)\\Steam".to_string();
-    let base_path = steam_path.unwrap_or(default_path);
+) -> Result<String, AppError> {
+    // Platforma göre varsayılan yolu seç
+    let default_path = if cfg!(target_os = "windows") {
+        "C:\\Program Files (x86)\\Steam".to_string()
+    } else {
+        // macOS varsayılan yolu
+        let home = std::env::var("HOME").unwrap_or_default();
+        format!("{}/Library/Application Support/Steam", home)
+    };
 
-    // libraryfolders.vdf dosyasını oku
-    let vdf_path = format!("{}\\steamapps\\libraryfolders.vdf", base_path);
-    let vdf_content = std::fs::read_to_string(&vdf_path)
-        .map_err(|e| format!("VDF dosyası okunamadı ({}): {}", vdf_path, e))?;
+    let base_path = steam_path.unwrap_or(default_path);
+    let base_path_buf = PathBuf::from(base_path);
+    
+    // libraryfolders.vdf yolunu oluştur
+    let mut vdf_path = base_path_buf.clone();
+    vdf_path.push("steamapps");
+    vdf_path.push("libraryfolders.vdf");
+
+    if !vdf_path.exists() {
+        return Err(AppError::Io(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            format!("Steam libraryfolders.vdf bulunamadı: {:?}", vdf_path)
+        )));
+    }
+
+    let vdf_content = std::fs::read_to_string(&vdf_path)?;
 
     // Kütüphane klasörlerini ayrıştır
     let library_paths = sync::steam::parse_library_folders(&vdf_content);
@@ -42,7 +60,9 @@ pub async fn sync_local_installations(
     // Her kütüphane klasöründeki appmanifest dosyalarını tara
     let mut installed_games = Vec::new();
     for lib_path in &library_paths {
-        let steamapps_dir = format!("{}\\steamapps", lib_path);
+        let mut steamapps_dir = PathBuf::from(lib_path);
+        steamapps_dir.push("steamapps");
+        
         if let Ok(entries) = std::fs::read_dir(&steamapps_dir) {
             for entry in entries.flatten() {
                 let file_name = entry.file_name().to_string_lossy().to_string();
@@ -58,7 +78,7 @@ pub async fn sync_local_installations(
     }
 
     let json = serde_json::to_string(&installed_games)
-        .map_err(|e| format!("JSON serileştirme hatası: {}", e))?;
+        .map_err(|e| AppError::System(format!("JSON serileştirme hatası: {}", e)))?;
 
     Ok(json)
 }

@@ -1,10 +1,10 @@
-// components/settings/SettingsPanel.tsx — Ayarlar Sayfası
-// Steam API Key, SteamID64, Epic hesap bilgileri ve uygulama ayarları
+// components/settings/SettingsPanel.tsx — Ayarlar Sayfası (Concept A)
+// Steam API Key, SteamID64, Epic hesap bilgileri, asimetrik butonlar ve Toast bildirim entegrasyonu
 
 import { useState, useEffect } from 'react';
 import {
   Save, RefreshCw, Monitor, Swords, Key,
-  User, FolderOpen, CheckCircle2, AlertCircle, Wifi
+  User, FolderOpen, AlertCircle, Wifi
 } from 'lucide-react';
 import Database from '@tauri-apps/plugin-sql';
 import { useSync } from '../../hooks/useSync';
@@ -14,15 +14,14 @@ export function SettingsPanel() {
   // Form durumları
   const [steamApiKey, setSteamApiKey] = useState('');
   const [steamId, setSteamId] = useState('');
-  const [steamPath, setSteamPath] = useState('C:\\Program Files (x86)\\Steam');
-  const [epicPath, setEpicPath] = useState('C:\\Program Files\\Epic Games');
+  const [steamPath, setSteamPath] = useState('');
+  const [epicPath, setEpicPath] = useState('');
   const [autoSync, setAutoSync] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState('');
   const [syncError, setSyncError] = useState('');
 
   const { syncSteam, syncEpic } = useSync();
-  const { isSyncing, syncMessage } = useGameStore();
+  const { isSyncing, syncMessage, addToast } = useGameStore();
 
   // Ayarları veritabanından yükle
   useEffect(() => {
@@ -39,18 +38,19 @@ export function SettingsPanel() {
 
       setSteamApiKey(settingsMap.get('steam_api_key') ?? '');
       setSteamId(settingsMap.get('steam_id') ?? '');
-      setSteamPath(settingsMap.get('steam_path') ?? 'C:\\Program Files (x86)\\Steam');
-      setEpicPath(settingsMap.get('epic_path') ?? 'C:\\Program Files\\Epic Games');
+      setSteamPath(settingsMap.get('steam_path') ?? '');
+      setEpicPath(settingsMap.get('epic_path') ?? '');
       setAutoSync(settingsMap.get('auto_sync') !== 'false');
     } catch (err) {
       console.error('Ayarlar yüklenirken hata:', err);
+      addToast('Ayarlar yüklenemedi', 'error');
     }
   };
 
   // Ayarları veritabanına kaydet
   const saveSettings = async () => {
     setIsSaving(true);
-    setSaveMessage('');
+    setSyncError('');
     try {
       const db = await Database.load('sqlite:gamemanager.db');
       const settings = [
@@ -69,11 +69,10 @@ export function SettingsPanel() {
         );
       }
 
-      setSaveMessage('Ayarlar kaydedildi');
-      setTimeout(() => setSaveMessage(''), 3000);
+      addToast('Ayarlar başarıyla kaydedildi', 'success');
     } catch (err) {
       console.error('Ayarlar kaydedilirken hata:', err);
-      setSaveMessage('Kaydetme hatası!');
+      addToast('Ayarlar kaydedilemedi', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -84,13 +83,26 @@ export function SettingsPanel() {
     setSyncError('');
     try {
       await syncSteam(steamApiKey, steamId);
+      addToast('Steam kütüphanesi başarıyla eşzamanlandı', 'success');
     } catch (err) {
       setSyncError(String(err));
+      addToast('Steam eşzamanlama hatası', 'error');
+    }
+  };
+
+  // Epic senkronizasyonu başlat
+  const handleEpicSync = async () => {
+    setSyncError('');
+    try {
+      await syncEpic();
+      addToast('Epic Games kütüphanesi başarıyla eşzamanlandı', 'success');
+    } catch (err) {
+      addToast('Epic Games eşzamanlama hatası', 'error');
     }
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8 max-w-3xl animate-fade-in">
+    <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8 max-w-3xl animate-fade-in select-none">
       {/* Başlık */}
       <div>
         <h2 className="text-2xl font-bold font-display text-text-bright mb-1">
@@ -105,7 +117,7 @@ export function SettingsPanel() {
           Steam Yapılandırması
           ========================================== */}
       <section
-        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle"
+        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle shadow-premium"
       >
         <div className="flex items-center gap-3">
           <div
@@ -126,7 +138,7 @@ export function SettingsPanel() {
         {/* Steam API Key */}
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <Key size={13} className="text-accent-indigo" />
+            <Key size={13} className="text-accent-orange" />
             Steam API Anahtarı
           </label>
           <input
@@ -138,7 +150,7 @@ export function SettingsPanel() {
           />
           <p className="text-xs text-text-muted mt-1.5">
             API anahtarınızı{' '}
-            <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener noreferrer" className="text-accent-indigo hover:underline font-medium">steamcommunity.com/dev/apikey</a>
+            <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener noreferrer" className="text-accent-orange hover:underline font-semibold">steamcommunity.com/dev/apikey</a>
             {' '}adresinden alabilirsiniz.
           </p>
         </div>
@@ -146,7 +158,7 @@ export function SettingsPanel() {
         {/* SteamID64 */}
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <User size={13} className="text-accent-indigo" />
+            <User size={13} className="text-accent-orange" />
             SteamID64
           </label>
           <input
@@ -158,7 +170,7 @@ export function SettingsPanel() {
           />
           <p className="text-xs text-text-muted mt-1.5">
             SteamID'nizi{' '}
-            <a href="https://steamid.io" target="_blank" rel="noopener noreferrer" className="text-accent-indigo hover:underline font-medium">steamid.io</a>
+            <a href="https://steamid.io" target="_blank" rel="noopener noreferrer" className="text-accent-orange hover:underline font-semibold">steamid.io</a>
             {' '}üzerinden bulabilirsiniz.
           </p>
         </div>
@@ -166,7 +178,7 @@ export function SettingsPanel() {
         {/* Steam Kurulum Yolu */}
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <FolderOpen size={13} className="text-accent-indigo" />
+            <FolderOpen size={13} className="text-accent-orange" />
             Steam Kurulum Yolu
           </label>
           <input
@@ -204,13 +216,13 @@ export function SettingsPanel() {
           Epic Games Yapılandırması
           ========================================== */}
       <section
-        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle"
+        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle shadow-premium"
       >
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center bg-accent-purple/10"
+            className="w-10 h-10 rounded-xl flex items-center justify-center bg-accent-teal/10"
           >
-            <Swords size={18} className="text-accent-purple" />
+            <Swords size={18} className="text-accent-teal" />
           </div>
           <div>
             <h3 className="text-base font-bold font-display text-text-bright">
@@ -224,7 +236,7 @@ export function SettingsPanel() {
 
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <FolderOpen size={13} className="text-accent-purple" />
+            <FolderOpen size={13} className="text-accent-teal" />
             Epic Games Kurulum Yolu
           </label>
           <input
@@ -237,7 +249,7 @@ export function SettingsPanel() {
 
         <button
           className="flex items-center gap-2.5 w-full justify-center py-3 rounded-xl font-bold font-display text-xs tracking-wider border border-border-medium text-text-primary hover:bg-bg-hover hover:border-border-strong transition-all duration-200 cursor-pointer"
-          onClick={() => syncEpic()}
+          onClick={handleEpicSync}
           disabled={isSyncing}
         >
           <Wifi size={15} />
@@ -249,7 +261,7 @@ export function SettingsPanel() {
           Genel Ayarlar
           ========================================== */}
       <section
-        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle"
+        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle shadow-premium"
       >
         <h3 className="text-base font-bold font-display text-text-bright">
           Genel Ayarlar
@@ -267,7 +279,7 @@ export function SettingsPanel() {
           </div>
           <button
             className={`relative w-11 h-6 rounded-full transition-all duration-300 cursor-pointer ${
-              autoSync ? 'bg-accent-indigo' : 'bg-bg-hover'
+              autoSync ? 'bg-accent-orange' : 'bg-bg-hover'
             }`}
             onClick={() => setAutoSync(!autoSync)}
           >
@@ -283,20 +295,13 @@ export function SettingsPanel() {
       {/* Kaydet butonu */}
       <div className="flex items-center gap-3">
         <button
-          className="btn-primary flex items-center gap-2 px-6 py-3 cursor-pointer"
+          className="btn-primary flex items-center gap-2 px-6 py-3 cursor-pointer shadow-premium"
           onClick={saveSettings}
           disabled={isSaving}
         >
           <Save size={15} />
           {isSaving ? 'Kaydediliyor...' : 'Ayarları Kaydet'}
         </button>
-
-        {saveMessage && (
-          <span className="flex items-center gap-1 text-sm font-semibold text-accent-emerald">
-            <CheckCircle2 size={16} />
-            {saveMessage}
-          </span>
-        )}
       </div>
     </div>
   );

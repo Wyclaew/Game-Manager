@@ -1,5 +1,5 @@
-// components/games/GameDetailPanel.tsx — Oyun Detay Paneli
-// Sağdan kayan slide-over panel: banner, istatistikler, PLAY butonu, durum değiştirici
+// components/games/GameDetailPanel.tsx — Oyun Detay Paneli (Premium Slide-Over)
+// Sağdan kayan cam paneli: banner, istatistikler, asimetrik PLAY butonu, kiremit turuncu vurgular
 
 import { useState } from 'react';
 import {
@@ -32,7 +32,7 @@ const platformIcons: Record<PlatformName, typeof Monitor> = {
 };
 
 export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
-  const { selectedGame, isDetailOpen, toggleDetail, updateGameStatus, toggleFavorite } = useGameStore();
+  const { selectedGame, isDetailOpen, toggleDetail, updateGameStatus, toggleFavorite, addToast } = useGameStore();
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
   if (!selectedGame || !isDetailOpen) return null;
@@ -63,27 +63,27 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
 
   return (
     <>
-      {/* Backdrop — tıklayınca kapat */}
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 transition-opacity duration-300 bg-black/40 backdrop-blur-[4px]"
+        className="fixed inset-0 z-40 transition-opacity duration-300 bg-black/50 backdrop-blur-[5px]"
         onClick={() => toggleDetail(false)}
       />
 
       {/* Panel */}
       <div
-        className="fixed top-0 right-0 h-full z-50 flex flex-col animate-slide-right glass-strong border-l border-border-subtle shadow-premium"
+        className="fixed top-0 right-0 h-full z-50 flex flex-col animate-slide-right glass-strong border-l border-border-strong shadow-premium"
         style={{
-          width: '460px',
+          width: '450px',
           maxWidth: '100vw',
         }}
       >
         {/* Banner görseli */}
-        <div className="relative h-56 flex-shrink-0 overflow-hidden">
+        <div className="relative h-56 flex-shrink-0 overflow-hidden select-none">
           <img
             src={game.banner_image_url ?? game.cover_image_url ?? ''}
             alt={game.title}
-            className="w-full h-full object-cover select-none"
-            style={{ filter: 'brightness(0.65)' }}
+            className="w-full h-full object-cover"
+            style={{ filter: 'brightness(0.6)' }}
           />
           {/* Gradient overlay */}
           <div
@@ -92,10 +92,10 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
 
           {/* Kapat butonu */}
           <button
-            className="absolute top-4 right-4 p-2 rounded-xl glass border border-border-subtle text-text-primary hover:text-accent-indigo hover:scale-105 hover:border-border-strong transition-all duration-200 cursor-pointer"
+            className="absolute top-4 right-4 p-2 rounded-xl glass border border-border-subtle text-text-primary hover:text-accent-orange hover:scale-105 hover:border-border-strong transition-all duration-200 cursor-pointer"
             onClick={() => toggleDetail(false)}
           >
-            <X size={16} />
+            <X size={15} />
           </button>
 
           {/* Favori butonu */}
@@ -103,10 +103,13 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
             className={`absolute top-4 left-4 p-2 rounded-xl glass border transition-all duration-200 hover:scale-105 cursor-pointer ${
               isFavorite ? 'bg-rose-500/20 border-rose-500/40 text-rose-500' : 'border-border-subtle text-white'
             }`}
-            onClick={() => toggleFavorite(game.id)}
+            onClick={async () => {
+              await toggleFavorite(game.id);
+              addToast(isFavorite ? 'Favorilerden çıkarıldı' : 'Favorilere eklendi', 'success');
+            }}
           >
             <Heart
-              size={16}
+              size={15}
               fill={isFavorite ? 'currentColor' : 'none'}
             />
           </button>
@@ -130,25 +133,29 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
         {/* İçerik — scrollable */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
 
-          {/* OYNA / KAPAT butonu */}
+          {/* OYNA / YÜKLENMEMİŞ butonu */}
           <button
             className={`w-full py-3.5 rounded-xl font-bold font-display text-xs tracking-widest flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer text-white shadow-premium ${
               isInstalled
-                ? 'bg-gradient-to-r from-accent-indigo to-accent-purple hover:shadow-[0_8px_25px_var(--accent-indigo-glow)]'
-                : 'bg-gradient-to-r from-accent-emerald to-accent-emerald-glow hover:shadow-[0_8px_25px_var(--accent-emerald-glow)]'
+                ? 'bg-gradient-to-r from-accent-orange to-accent-orange-hover hover:shadow-[0_8px_25px_var(--accent-orange-glow)] border border-accent-orange/30'
+                : 'bg-gradient-to-r from-accent-teal to-accent-teal-glow hover:shadow-[0_8px_25px_var(--accent-teal-glow)] border border-accent-teal/30'
             }`}
             onClick={() => {
-              if (isInstalled) onLaunch(game);
+              if (isInstalled) {
+                onLaunch(game);
+              } else {
+                addToast('Oyun kurulu değil. Lütfen önce kurulum yolunu tanımlayın.', 'info');
+              }
             }}
           >
             {isInstalled ? (
               <>
-                <Play size={15} fill="white" />
+                <Play size={14} fill="white" />
                 OYUNU BAŞLAT
               </>
             ) : (
               <>
-                <Download size={15} />
+                <Download size={14} />
                 YÜKLENMEMİŞ
               </>
             )}
@@ -157,9 +164,9 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
           {/* İstatistik kartları */}
           <div className="grid grid-cols-2 gap-4">
             {/* Toplam süre */}
-            <div className="rounded-2xl p-4 glass border border-border-subtle">
+            <div className="rounded-2xl p-4 glass border border-border-subtle hover:border-border-strong transition-all duration-300">
               <div className="flex items-center gap-2 mb-1.5">
-                <Clock size={13} className="text-accent-indigo" />
+                <Clock size={13} className="text-accent-orange" />
                 <span className="text-[10px] font-bold tracking-wider uppercase text-text-muted">Toplam Süre</span>
               </div>
               <p className="text-lg font-bold font-display text-text-bright">
@@ -168,9 +175,9 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
             </div>
 
             {/* Son oynama */}
-            <div className="rounded-2xl p-4 glass border border-border-subtle">
+            <div className="rounded-2xl p-4 glass border border-border-subtle hover:border-border-strong transition-all duration-300">
               <div className="flex items-center gap-2 mb-1.5">
-                <Calendar size={13} className="text-accent-emerald" />
+                <Calendar size={13} className="text-accent-teal" />
                 <span className="text-[10px] font-bold tracking-wider uppercase text-text-muted">Son Oynama</span>
               </div>
               <p className="text-xs font-semibold text-text-bright mt-0.5">
@@ -202,7 +209,7 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
               {/* Dropdown menü */}
               {statusDropdownOpen && (
                 <div
-                  className="absolute top-full left-0 right-0 mt-1.5 rounded-xl overflow-hidden z-10 animate-scale-in glass-strong border border-border-strong"
+                  className="absolute top-full left-0 right-0 mt-1.5 rounded-xl overflow-hidden z-10 animate-scale-in glass-strong border border-border-strong shadow-premium"
                 >
                   {allStatuses.map((status) => {
                     const isSelected = game.status === status;
@@ -210,11 +217,12 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
                       <button
                         key={status}
                         className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150 cursor-pointer ${
-                          isSelected ? 'bg-bg-hover text-accent-indigo font-semibold' : 'text-text-primary hover:bg-bg-tertiary/60'
+                          isSelected ? 'bg-bg-hover text-accent-orange font-semibold' : 'text-text-primary hover:bg-bg-tertiary/60'
                         }`}
-                        onClick={() => {
-                          updateGameStatus(game.id, status);
+                        onClick={async () => {
+                          await updateGameStatus(game.id, status);
                           setStatusDropdownOpen(false);
+                          addToast(`Oyun durumu "${statusLabels[status]}" olarak güncellendi`, 'success');
                         }}
                       >
                         <GameStatusBadge status={status} size="sm" />
@@ -227,7 +235,7 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
             </div>
           </div>
 
-          {/* Kurulum bilgileri */}
+          {/* Kurulum dizini */}
           {game.install_path && (
             <div className="space-y-2">
               <label className="text-[10px] font-bold tracking-wider uppercase text-text-muted">

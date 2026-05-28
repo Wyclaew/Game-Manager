@@ -38,7 +38,7 @@ export function TopBar() {
 
   return (
     <header
-      className="flex items-center gap-4 px-6 py-3 border-b bg-bg-secondary border-border-subtle"
+      className="flex items-center gap-4 px-6 py-3 border-b bg-bg-secondary border-border-subtle relative"
       style={{
         minHeight: '64px',
       }}
@@ -49,13 +49,13 @@ export function TopBar() {
           {navTitles[activeNav] ?? 'Tüm Oyunlar'}
         </h2>
         <span
-          className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent-indigo-glow text-accent-indigo"
+          className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent-orange-glow text-accent-orange"
         >
           {filteredGames.length} oyun
         </span>
 
         {isSyncing && (
-          <RefreshCw size={16} className="animate-spin ml-1 text-accent-indigo" />
+          <RefreshCw size={16} className="animate-spin ml-1 text-accent-orange" />
         )}
       </div>
 
@@ -88,7 +88,7 @@ export function TopBar() {
                 onClick={() => setSorting(opt.field)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer ${
                   isSelected 
-                    ? 'bg-bg-elevated text-accent-indigo border border-border-strong' 
+                    ? 'bg-bg-elevated text-accent-orange border border-border-strong' 
                     : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary border border-transparent'
                 }`}
                 title={`${opt.label}e göre sırala`}
@@ -131,7 +131,7 @@ export function TopBar() {
           <button
             onClick={() => setViewMode('grid')}
             className={`p-1.5 rounded-md transition-all duration-200 cursor-pointer ${
-              viewMode === 'grid' ? 'bg-bg-elevated text-accent-indigo' : 'text-text-muted hover:text-text-secondary'
+              viewMode === 'grid' ? 'bg-bg-elevated text-accent-orange' : 'text-text-muted hover:text-text-secondary'
             }`}
             title="Grid görünümü"
           >
@@ -140,7 +140,7 @@ export function TopBar() {
           <button
             onClick={() => setViewMode('list')}
             className={`p-1.5 rounded-md transition-all duration-200 cursor-pointer ${
-              viewMode === 'list' ? 'bg-bg-elevated text-accent-indigo' : 'text-text-muted hover:text-text-secondary'
+              viewMode === 'list' ? 'bg-bg-elevated text-accent-orange' : 'text-text-muted hover:text-text-secondary'
             }`}
             title="Liste görünümü"
           >
@@ -154,7 +154,7 @@ export function TopBar() {
         {/* Tema Değiştirici */}
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="p-1.5 rounded-lg border border-border-subtle bg-bg-secondary text-text-secondary hover:text-accent-indigo hover:bg-bg-hover hover:border-border-strong transition-all duration-300 cursor-pointer flex items-center justify-center"
+          className="p-1.5 rounded-lg border border-border-subtle bg-bg-secondary text-text-secondary hover:text-accent-orange hover:bg-bg-hover hover:border-border-strong transition-all duration-300 cursor-pointer flex items-center justify-center"
           title={theme === 'dark' ? 'Açık Temaya Geç' : 'Koyu Temaya Geç'}
         >
           {theme === 'dark' ? <Sun size={16} className="animate-pulse" /> : <Moon size={16} />}

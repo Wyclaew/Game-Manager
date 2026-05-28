@@ -6,6 +6,12 @@ import { create } from 'zustand';
 import type { Game, GameFilters, SortField, SortDirection, ViewMode, NavSection, LibraryStats, GameStatus } from '../types';
 import Database from '@tauri-apps/plugin-sql';
 
+export interface Toast {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
 // =============================================
 // Store Arayüzü — Tüm durum ve aksiyonlar
 // =============================================
@@ -25,6 +31,7 @@ interface GameStore {
   isDetailOpen: boolean;            // Detay paneli açık mı?
   stats: LibraryStats;              // Kütüphane istatistikleri
   theme: 'dark' | 'light';          // Tema (dark/light)
+  toasts: Toast[];                  // Toast bildirimleri
 
   // === Aksiyonlar (Actions) ===
   loadGames: () => Promise<void>;
@@ -40,6 +47,8 @@ interface GameStore {
   calculateStats: () => void;
   applyFiltersAndSort: () => void;
   setTheme: (theme: 'dark' | 'light') => void;
+  addToast: (message: string, type: 'success' | 'error' | 'info') => void;
+  removeToast: (id: string) => void;
 }
 
 // =============================================
@@ -94,6 +103,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     statusCounts: { Backlog: 0, Playing: 0, Completed: 0, Wishlist: 0, Dropped: 0 },
   },
   theme: (localStorage.getItem('theme') as 'dark' | 'light') || 'dark',
+  toasts: [],
 
   // =============================================
   // Veritabanı İşlemleri
@@ -333,5 +343,21 @@ export const useGameStore = create<GameStore>((set, get) => ({
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
     set({ theme });
+  },
+
+  addToast: (message, type) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    set((state) => ({
+      toasts: [...state.toasts, { id, message, type }],
+    }));
+    setTimeout(() => {
+      get().removeToast(id);
+    }, 4500);
+  },
+
+  removeToast: (id) => {
+    set((state) => ({
+      toasts: state.toasts.filter((t) => t.id !== id),
+    }));
   },
 }));

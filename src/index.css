@@ -1,6 +1,6 @@
 /* =============================================
    Game Manager — Global Stiller (CSS Tema Sistemi)
-   Tailwind CSS v4 ile Tema Yapılandırması
+   Concept A: Matte Charcoal & Burnt Orange (Premium Studio Edit)
    ============================================= */
 
 /* Google Fonts — Modern Tipografi */
@@ -13,34 +13,35 @@
    Dinamik Tema Değişkenleri
    ============================================= */
 :root {
-  /* Dark Theme (Derin Uzay Teması - Varsayılan) */
-  --bg-primary: #07070b;
-  --bg-secondary: #0f0f17;
-  --bg-tertiary: #161623;
-  --bg-elevated: #1e1e30;
-  --bg-hover: #27273e;
+  /* Dark Theme (Matte Charcoal & Burnt Orange - Varsayılan) */
+  --bg-primary: #0a0a0d;
+  --bg-secondary: #121217;
+  --bg-tertiary: #191921;
+  --bg-elevated: #22222d;
+  --bg-hover: #2b2b3a;
   
   /* Kenarlık Renkleri */
-  --border-subtle: rgba(255, 255, 255, 0.04);
-  --border-medium: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-subtle: rgba(255, 255, 255, 0.03);
+  --border-medium: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
   
   /* Metin Renkleri */
-  --text-primary: #eef2f6;
+  --text-primary: #e2e8f0;
   --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-muted: #5e6b7c;
   --text-bright: #ffffff;
   
-  /* Vurgu Renkleri */
-  --accent-indigo: #6366f1;
-  --accent-indigo-hover: #818cf8;
-  --accent-indigo-glow: rgba(99, 102, 241, 0.15);
+  /* Vurgu Renkleri (Burnt Orange & Muted Teal) */
+  --accent-orange: #e05a2b;
+  --accent-orange-hover: #f16c3d;
+  --accent-orange-glow: rgba(224, 90, 43, 0.18);
+  --accent-teal: #1f9e90;
+  --accent-teal-glow: rgba(31, 158, 144, 0.18);
+  
   --accent-emerald: #10b981;
   --accent-emerald-glow: rgba(16, 185, 129, 0.15);
-  --accent-amber: #f59e0b;
+  --accent-amber: #d97706;
   --accent-rose: #f43f5e;
-  --accent-purple: #a855f7;
-  --accent-cyan: #06b6d4;
   
   /* Platform Renkleri */
   --steam: #171a21;
@@ -49,57 +50,60 @@
   --epic-accent: #ffffff;
   
   /* Cam Efekti Arka Planları */
-  --bg-glass: rgba(15, 15, 23, 0.65);
-  --bg-glass-strong: rgba(15, 15, 23, 0.85);
+  --bg-glass: rgba(18, 18, 23, 0.7);
+  --bg-glass-strong: rgba(18, 18, 23, 0.88);
   
   /* Gölgeler */
-  --shadow-premium: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 25px rgba(224, 90, 43, 0.18);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] {
-  /* Light Theme (Ferah ve Soft Temiz Arayüz) */
-  --bg-primary: #f4f6f9;
+  /* Light Theme (Studio Soft Warm Edit) */
+  --bg-primary: #f2f2f5;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #edf2f7;
-  --bg-elevated: #e2e8f0;
-  --bg-hover: #cbd5e1;
+  --bg-tertiary: #e9e9ee;
+  --bg-elevated: #dddde5;
+  --bg-hover: #ced0db;
   
   /* Kenarlık Renkleri */
-  --border-subtle: rgba(0, 0, 0, 0.04);
-  --border-medium: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.03);
+  --border-medium: rgba(0, 0, 0, 0.06);
   --border-strong: rgba(0, 0, 0, 0.12);
   
   /* Metin Renkleri */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --text-bright: #0f172a;
+  --text-primary: #181820;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --text-bright: #0a0a0d;
   
   /* Vurgu Renkleri */
-  --accent-indigo: #4f46e5;
-  --accent-indigo-hover: #4338ca;
-  --accent-indigo-glow: rgba(79, 70, 229, 0.08);
+  --accent-orange: #d94b1a;
+  --accent-orange-hover: #c13e11;
+  --accent-orange-glow: rgba(217, 75, 26, 0.1);
+  --accent-teal: #178377;
+  --accent-teal-glow: rgba(23, 131, 119, 0.1);
+  
   --accent-emerald: #059669;
-  --accent-emerald-glow: rgba(5, 150, 105, 0.08);
-  --accent-amber: #d97706;
-  --accent-rose: #dc2626;
-  --accent-purple: #7c3aed;
-  --accent-cyan: #0891b2;
+  --accent-emerald-glow: rgba(5, 150, 105, 0.1);
+  --accent-amber: #b45309;
+  --accent-rose: #e11d48;
   
   /* Platform Renkleri */
   --steam: #e2e8f0;
   --steam-accent: #0284c7;
   --epic: #f1f5f9;
-  --epic-accent: #0f172a;
+  --epic-accent: #111115;
   
   /* Cam Efekti Arka Planları */
-  --bg-glass: rgba(255, 255, 255, 0.7);
-  --bg-glass-strong: rgba(255, 255, 255, 0.88);
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --bg-glass-strong: rgba(255, 255, 255, 0.9);
   
   /* Gölgeler */
-  --shadow-premium: 0 15px 30px -10px rgba(148, 163, 184, 0.2);
-  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.08);
+  --shadow-premium: 0 15px 35px -10px rgba(74, 85, 104, 0.15);
+  --shadow-glow: 0 0 20px rgba(217, 75, 26, 0.1);
+  --shadow-inner: inset 0 2px 4px 0 rgba(74, 85, 104, 0.08);
 }
 
 @theme {
@@ -119,15 +123,16 @@
   --color-text-muted: var(--text-muted);
   --color-text-bright: var(--text-bright);
   
-  --color-accent-indigo: var(--accent-indigo);
-  --color-accent-indigo-hover: var(--accent-indigo-hover);
-  --color-accent-indigo-glow: var(--accent-indigo-glow);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-orange-hover: var(--accent-orange-hover);
+  --color-accent-orange-glow: var(--accent-orange-glow);
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-teal-glow: var(--accent-teal-glow);
+  
   --color-accent-emerald: var(--accent-emerald);
   --color-accent-emerald-glow: var(--accent-emerald-glow);
   --color-accent-amber: var(--accent-amber);
   --color-accent-rose: var(--accent-rose);
-  --color-accent-purple: var(--accent-purple);
-  --color-accent-cyan: var(--accent-cyan);
   
   --color-steam: var(--steam);
   --color-steam-accent: var(--steam-accent);
@@ -144,7 +149,7 @@
 }
 
 /* =============================================
-   Temel Stiller ve Normalizasyon
+   Temel Stiller
    ============================================= */
 * {
   margin: 0;
@@ -158,7 +163,7 @@ html {
   background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
+  transition: background-color 0.35s var(--ease-smooth), color 0.35s var(--ease-smooth);
 }
 
 body {
@@ -171,11 +176,11 @@ body {
 }
 
 /* =============================================
-   Özel Kaydırma Çubuğu (Scrollbar)
+   Kaydırma Çubuğu (Scrollbar)
    ============================================= */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -189,7 +194,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-indigo);
+  background: var(--color-accent-orange);
 }
 
 /* =============================================
@@ -206,28 +211,23 @@ body {
 }
 
 @keyframes slideInUp {
-  from { transform: translateY(24px); opacity: 0; }
+  from { transform: translateY(28px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes scaleIn {
-  from { transform: scale(0.96); opacity: 0; }
+  from { transform: scale(0.97); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px var(--color-accent-indigo-glow); }
-  50% { box-shadow: 0 0 35px var(--color-accent-indigo-glow), 0 0 50px var(--color-accent-indigo-glow); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+@keyframes pulse-glow-orange {
+  0%, 100% { box-shadow: 0 0 20px var(--color-accent-orange-glow); }
+  50% { box-shadow: 0 0 35px var(--color-accent-orange-glow), 0 0 50px var(--color-accent-orange-glow); }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-5px); }
 }
 
 /* =============================================
@@ -249,23 +249,8 @@ body {
   animation: scaleIn 0.25s var(--ease-smooth) forwards;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2.5s ease-in-out infinite;
-}
-
-.animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--color-bg-tertiary) 25%,
-    var(--color-bg-elevated) 50%,
-    var(--color-bg-tertiary) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s infinite;
-}
-
 .animate-float {
-  animation: float 3.5s ease-in-out infinite;
+  animation: float 3s ease-in-out infinite;
 }
 
 /* Cam Efekti (Glassmorphism) */
@@ -275,7 +260,6 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-premium);
-  transition: background-color 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
 }
 
 .glass-strong {
@@ -284,61 +268,66 @@ body {
   -webkit-backdrop-filter: blur(28px);
   border: 1px solid var(--border-medium);
   box-shadow: var(--shadow-premium);
-  transition: background-color 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
 }
 
-/* Gradyan Metin */
-.text-gradient {
-  background: linear-gradient(135deg, var(--color-accent-indigo), var(--color-accent-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Tel Kafes Desen Arka Planı (Hover Detayı) */
+.wireframe-pattern {
+  background-image: radial-gradient(var(--accent-orange-glow) 1px, transparent 0),
+                    linear-gradient(rgba(255,255,255,0.01) 1px, transparent 0),
+                    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 0);
+  background-size: 16px 16px, 8px 8px, 8px 8px;
 }
 
-/* Premium Kart Hover Efekti */
-.card-hover {
-  transition: all 0.35s var(--ease-spring);
-  border: 1px solid var(--border-subtle);
-}
-
-.card-hover:hover {
-  transform: translateY(-6px) scale(1.01);
-  border-color: var(--color-accent-indigo-hover);
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.4), var(--shadow-glow);
-}
-
-[data-theme="light"] .card-hover:hover {
-  box-shadow: 0 15px 35px -10px rgba(148, 163, 184, 0.25), var(--shadow-glow);
-}
-
-/* Premium Buton Stilleri */
+/* Premium Asimetrik Buton Stili (Concept A) */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-accent-indigo), var(--color-accent-purple));
+  background: linear-gradient(135deg, var(--color-accent-orange), #a33814);
   color: white;
   padding: 0.625rem 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem 1.25rem 0.5rem 1.25rem; /* Asimetrik, premium kesim */
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 0.825rem;
+  letter-spacing: 0.05em;
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  box-shadow: 0 4px 15px var(--color-accent-indigo-glow);
+  box-shadow: 0 4px 15px var(--color-accent-orange-glow);
   transition: all 0.25s var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(30deg);
+  transition: all 0.5s ease;
+  pointer-events: none;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--color-accent-indigo-glow), 0 0 0 2px var(--color-accent-indigo);
+  box-shadow: 0 6px 20px var(--color-accent-orange-glow);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover::after {
+  left: 120%;
 }
 
 .btn-primary:active {
   transform: translateY(0);
 }
 
-/* İnput Stilleri */
+/* Premium İç Gölgeli Input */
 .input-premium {
   background: var(--color-bg-tertiary);
   border: 1px solid var(--color-border-medium);
+  box-shadow: var(--shadow-inner);
   color: var(--color-text-primary);
   border-radius: 0.75rem;
   padding: 0.625rem 1rem;
@@ -349,10 +338,26 @@ body {
 
 .input-premium:focus {
   background: var(--color-bg-secondary);
-  border-color: var(--color-accent-indigo);
-  box-shadow: 0 0 0 3px var(--color-accent-indigo-glow);
+  border-color: var(--color-accent-orange);
+  box-shadow: var(--shadow-inner), 0 0 0 3px var(--color-accent-orange-glow);
 }
 
 .input-premium::placeholder {
   color: var(--color-text-muted);
+}
+
+/* Kart Hover Efekti */
+.card-hover {
+  transition: all 0.35s var(--ease-spring);
+  border: 1px solid var(--border-subtle);
+}
+
+.card-hover:hover {
+  transform: translateY(-6px) scale(1.015);
+  border-color: var(--color-accent-orange);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+}
+
+[data-theme="light"] .card-hover:hover {
+  box-shadow: 0 15px 35px -10px rgba(113, 128, 150, 0.2), var(--shadow-glow);
 }

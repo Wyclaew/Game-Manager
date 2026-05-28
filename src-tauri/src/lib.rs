@@ -5,6 +5,7 @@
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod commands;
+pub mod error;
 mod models;
 mod sync;
 

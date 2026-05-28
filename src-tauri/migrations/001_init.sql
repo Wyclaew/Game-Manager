@@ -35,14 +35,13 @@ CREATE TABLE IF NOT EXISTS games (
     UNIQUE(platform_id, external_game_id)
 );
 
--- Performans indeksleri
-CREATE INDEX IF NOT EXISTS idx_games_platform    ON games(platform_id);
-CREATE INDEX IF NOT EXISTS idx_games_title       ON games(title COLLATE NOCASE);
-CREATE INDEX IF NOT EXISTS idx_games_status      ON games(status);
-CREATE INDEX IF NOT EXISTS idx_games_installed   ON games(is_installed);
-CREATE INDEX IF NOT EXISTS idx_games_playtime    ON games(total_playtime_minutes DESC);
-CREATE INDEX IF NOT EXISTS idx_games_last_played ON games(last_played_at DESC);
-CREATE INDEX IF NOT EXISTS idx_games_favorite    ON games(is_favorite);
+-- Performans indeksleri (Hızlı sorgulama ve sıralama için kompozit indeksler)
+CREATE INDEX IF NOT EXISTS idx_games_platform_title    ON games(platform_id, title COLLATE NOCASE);
+CREATE INDEX IF NOT EXISTS idx_games_status_title      ON games(status, title COLLATE NOCASE);
+CREATE INDEX IF NOT EXISTS idx_games_installed_title   ON games(is_installed, title COLLATE NOCASE);
+CREATE INDEX IF NOT EXISTS idx_games_favorite_title    ON games(is_favorite, title COLLATE NOCASE);
+CREATE INDEX IF NOT EXISTS idx_games_playtime_desc     ON games(total_playtime_minutes DESC);
+CREATE INDEX IF NOT EXISTS idx_games_last_played_desc  ON games(last_played_at DESC);
 
 -- Oyun oturumu geçmişi (playtime tracking)
 CREATE TABLE IF NOT EXISTS play_sessions (

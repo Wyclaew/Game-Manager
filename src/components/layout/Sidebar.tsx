@@ -1,10 +1,10 @@
-// components/layout/Sidebar.tsx — Sol Navigasyon Çubuğu
-// Platform seçimi, koleksiyon filtreleri ve kütüphane istatistikleri
+// components/layout/Sidebar.tsx — Sol Navigasyon Çubuğu (Minimap Sidebar)
+// Minimal dikey çapa stili (64px genişlik), sadece ikonlar ve hover tooltipler
 
 import {
   Gamepad2, Library, Monitor, Swords, FolderOpen,
   Heart, Clock, Trophy, Settings,
-  RefreshCw, ChevronRight,
+  RefreshCw,
 } from 'lucide-react';
 import { useGameStore } from '../../stores/useGameStore';
 import type { NavSection } from '../../types';
@@ -23,7 +23,7 @@ export function Sidebar() {
 
   // Ana navigasyon öğeleri
   const mainNav: NavItem[] = [
-    { id: 'all', label: 'Tüm Oyunlar', icon: Library, count: stats.totalGames },
+    { id: 'all', label: 'Tüm Oyunlar', icon: Library, count: stats.totalGames, color: 'var(--color-accent-orange)' },
   ];
 
   // Platform navigasyonu
@@ -49,134 +49,120 @@ export function Sidebar() {
       <button
         key={item.id}
         onClick={() => setActiveNav(item.id)}
-        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 group relative"
+        className="w-full flex items-center justify-center p-3 rounded-xl transition-all duration-200 group relative cursor-pointer"
         style={{
           background: isActive ? 'var(--color-bg-elevated)' : 'transparent',
-          color: isActive ? 'var(--color-text-bright)' : 'var(--color-text-secondary)',
+          border: isActive ? '1px solid var(--color-border-medium)' : '1px solid transparent',
         }}
       >
-        {/* Aktif göstergesi */}
+        {/* Aktiflik göstergesi — küçük sol bar */}
         {isActive && (
           <div
-            className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
-            style={{ background: item.color ?? 'var(--color-accent-indigo)' }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
+            style={{ background: item.color ?? 'var(--color-accent-orange)' }}
           />
         )}
 
         <Icon
-          size={18}
-          style={{ color: isActive ? (item.color ?? 'var(--color-accent-indigo)') : undefined }}
-          className="flex-shrink-0 transition-colors group-hover:opacity-100"
+          size={16}
+          style={{ color: isActive ? (item.color ?? 'var(--color-accent-orange)') : 'var(--color-text-secondary)' }}
+          className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
         />
 
-        <span className="flex-1 text-sm font-medium truncate">{item.label}</span>
-
-        {item.count !== undefined && item.count > 0 && (
-          <span
-            className="text-xs font-medium px-1.5 py-0.5 rounded-md"
-            style={{
-              background: isActive ? 'rgba(255,255,255,0.1)' : 'var(--color-bg-tertiary)',
-              color: 'var(--color-text-secondary)',
-              fontSize: '0.7rem',
-            }}
-          >
-            {item.count}
-          </span>
-        )}
+        {/* Hover Tooltip */}
+        <div className="absolute left-[72px] bg-bg-elevated border border-border-strong text-[11px] font-bold py-1.5 px-3 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright flex items-center gap-2">
+          <span>{item.label}</span>
+          {item.count !== undefined && item.count > 0 && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-bg-tertiary text-text-muted font-sans font-medium">
+              {item.count}
+            </span>
+          )}
+        </div>
       </button>
     );
   };
 
   return (
     <aside
-      className="flex flex-col h-screen border-r w-[260px] min-w-[260px] bg-bg-secondary border-border-subtle"
+      className="flex flex-col h-screen border-r w-[64px] min-w-[64px] bg-bg-secondary border-border-subtle items-center"
     >
-      {/* Logo / Başlık */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-border-subtle">
+      {/* Logo */}
+      <div className="flex items-center justify-center py-5 border-b border-border-subtle w-full mb-4">
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-accent-indigo to-accent-purple shadow-[0_4px_15px_var(--accent-indigo-glow)]"
+          className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-accent-orange to-accent-orange-hover shadow-[0_4px_15px_var(--accent-orange-glow)]"
         >
-          <Gamepad2 size={18} className="text-white" />
-        </div>
-        <div>
-          <h1 className="text-sm font-bold font-display text-text-bright">
-            Game Manager
-          </h1>
-          <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
-            KÜTÜPHANE YÖNETİCİSİ
-          </p>
+          <Gamepad2 size={16} className="text-white" />
         </div>
       </div>
 
       {/* Navigasyon İçeriği */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-4 w-full flex flex-col items-center">
         {/* Ana */}
-        <nav className="space-y-1">
+        <nav className="w-full space-y-1">
           {mainNav.map(renderNavItem)}
         </nav>
 
+        {/* Ayırıcı */}
+        <div className="w-8 h-px bg-border-subtle" />
+
         {/* Platformlar */}
-        <div>
-          <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-text-muted">
-            Platformlar
-          </p>
-          <nav className="space-y-1">
-            {platformNav.map(renderNavItem)}
-          </nav>
-        </div>
+        <nav className="w-full space-y-1">
+          {platformNav.map(renderNavItem)}
+        </nav>
+
+        {/* Ayırıcı */}
+        <div className="w-8 h-px bg-border-subtle" />
 
         {/* Koleksiyonlar */}
-        <div>
-          <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-text-muted">
-            Koleksiyonlar
-          </p>
-          <nav className="space-y-1">
-            {collectionNav.map(renderNavItem)}
-          </nav>
-        </div>
+        <nav className="w-full space-y-1">
+          {collectionNav.map(renderNavItem)}
+        </nav>
       </div>
 
       {/* Alt Bilgi — İstatistikler & Ayarlar */}
-      <div className="px-3 py-4 border-t border-border-subtle space-y-4">
-        {/* Mini istatistik kartları */}
-        <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-xl px-3.5 py-2.5 bg-bg-tertiary border border-border-subtle hover:border-border-strong transition-all duration-300">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Toplam</p>
-            <p className="text-lg font-bold font-display text-accent-indigo mt-0.5">
-              {stats.totalGames}
-            </p>
-          </div>
-          <div className="rounded-xl px-3.5 py-2.5 bg-bg-tertiary border border-border-subtle hover:border-border-strong transition-all duration-300">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Süre</p>
-            <p className="text-lg font-bold font-display text-accent-emerald mt-0.5">
-              {stats.totalPlaytimeHours}
-              <span className="text-[10px] font-semibold font-sans text-text-secondary ml-0.5">sa</span>
-            </p>
-          </div>
-        </div>
-
+      <div className="px-2 py-4 border-t border-border-subtle w-full flex flex-col items-center gap-4">
         {/* Senkronizasyon durumu */}
         {isSyncing && (
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-bg-tertiary border border-border-subtle animate-pulse">
-            <RefreshCw size={12} className="animate-spin text-accent-indigo" />
-            <span className="text-xs font-semibold text-text-secondary">
+          <div className="relative group p-2 rounded-xl bg-bg-tertiary border border-border-subtle animate-pulse">
+            <RefreshCw size={14} className="animate-spin text-accent-orange" />
+            <div className="absolute left-[72px] bg-bg-elevated border border-border-strong text-[11px] font-bold py-1.5 px-3 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright">
               Eşzamanlanıyor...
-            </span>
+            </div>
           </div>
         )}
+
+        {/* İstatistikler */}
+        <div className="flex flex-col items-center gap-2">
+          {/* Toplam Oyun */}
+          <div className="relative group p-2 rounded-xl bg-bg-tertiary border border-border-subtle hover:border-border-strong transition-all duration-300 cursor-default">
+            <Library size={15} className="text-accent-orange" />
+            <div className="absolute left-[72px] top-1/2 -translate-y-1/2 bg-bg-elevated border border-border-strong text-[11px] font-bold py-1.5 px-3 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright">
+              Toplam: {stats.totalGames} Oyun
+            </div>
+          </div>
+          
+          {/* Süre */}
+          <div className="relative group p-2 rounded-xl bg-bg-tertiary border border-border-subtle hover:border-border-strong transition-all duration-300 cursor-default">
+            <Clock size={15} className="text-accent-teal" />
+            <div className="absolute left-[72px] top-1/2 -translate-y-1/2 bg-bg-elevated border border-border-strong text-[11px] font-bold py-1.5 px-3 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright">
+              Toplam Süre: {stats.totalPlaytimeHours} Saat
+            </div>
+          </div>
+        </div>
 
         {/* Ayarlar butonu */}
         <button
           onClick={() => setActiveNav('settings')}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer ${
+          className={`relative group flex items-center justify-center p-3 rounded-xl transition-all duration-200 cursor-pointer ${
             activeNav === 'settings' 
               ? 'bg-bg-elevated text-text-bright border border-border-medium' 
               : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary border border-transparent'
           }`}
         >
-          <Settings size={16} />
-          <span className="flex-1 text-sm font-semibold">Ayarlar</span>
-          <ChevronRight size={14} className="text-text-muted" />
+          <Settings size={15} />
+          <div className="absolute left-[72px] bg-bg-elevated border border-border-strong text-[11px] font-bold py-1.5 px-3 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright">
+            Ayarlar
+          </div>
         </button>
       </div>
     </aside>

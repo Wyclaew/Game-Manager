@@ -2,7 +2,9 @@
 // Steam Web API çağrıları ve yerel VDF/ACF dosya ayrıştırıcısı
 
 use crate::models::{SteamOwnedGamesResponse, SteamGame};
+use crate::error::AppError;
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 /// Yerel kurulu oyun bilgisi — appmanifest_*.acf dosyalarından çıkarılır
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -15,11 +17,10 @@ pub struct InstalledGameInfo {
 
 /// Steam Web API'den sahip olunan oyunları çeker.
 /// API Endpoint: IPlayerService/GetOwnedGames/v0001
-/// Parametreler: key, steamid, include_appinfo, include_played_free_games
 pub async fn fetch_steam_library(
     api_key: &str,
     steam_id: &str,
-) -> Result<Vec<SteamGame>, String> {
+) -> Result<Vec<SteamGame>, AppError> {
     let url = format!(
         "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/\
          ?key={}&steamid={}&include_appinfo=true&include_played_free_games=true&format=json",
@@ -30,20 +31,18 @@ pub async fn fetch_steam_library(
     let response = client
         .get(&url)
         .send()
-        .await
-        .map_err(|e| format!("Steam API isteği başarısız: {}", e))?;
+        .await?;
 
     if !response.status().is_success() {
-        return Err(format!(
+        return Err(AppError::Auth(format!(
             "Steam API hata kodu: {} — API anahtarınızı ve SteamID'nizi kontrol edin",
             response.status()
-        ));
+        )));
     }
 
     let data: SteamOwnedGamesResponse = response
         .json()
-        .await
-        .map_err(|e| format!("Steam JSON ayrıştırma hatası: {}", e))?;
+        .await?;
 
     Ok(data.response.games.unwrap_or_default())
 }
@@ -117,7 +116,11 @@ pub fn parse_app_manifest(acf_content: &str, library_path: &str) -> Option<Insta
     // Üç alan da bulunmalı
     match (appid, name, install_dir) {
         (Some(id), Some(n), Some(dir)) => {
-            let full_path = format!("{}\\steamapps\\common\\{}", library_path, dir);
+            let mut path = PathBuf::from(library_path);
+            path.push("steamapps");
+            path.push("common");
+            path.push(&dir);
+            let full_path = path.to_string_lossy().to_string();
             Some(InstalledGameInfo {
                 appid: id,
                 name: n,
