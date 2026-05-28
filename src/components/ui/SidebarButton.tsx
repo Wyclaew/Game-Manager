@@ -26,77 +26,64 @@ export function SidebarButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center w-full justify-start px-3 py-3 gap-3.5 rounded-xl transition-all duration-300 group relative cursor-pointer outline-none select-none text-left overflow-hidden ${isActive ? 'bg-bg-hover border-border-subtle' : 'bg-transparent border-transparent hover:bg-[rgba(128,128,128,0.05)]'}`}
-      style={{
-        borderWidth: '1px'
-      }}
+      className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg select-none cursor-pointer group transition-all duration-200 overflow-hidden relative ${
+        isActive 
+          ? 'bg-gradient-to-r from-accent-ember-start/5 to-transparent' 
+          : 'bg-transparent hover:bg-bg-hover active:bg-bg-hover/80'
+      }`}
     >
-      {/* Sol kenarda yer alan Ember gradyan aktiflik çubuğu */}
+      {/* Sol kenarda yer alan 3px dikey keskin indikatör */}
       {isActive && (
         <motion.div
           layoutId="sidebarActiveBar"
-          className="absolute -left-3 top-3 bottom-3 w-[2.5px] rounded-r-full bg-gradient-to-b from-orange-500 to-rose-600 shadow-[0_0_10px_rgba(249,115,22,0.5)]"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r bg-gradient-to-b from-orange-500 to-rose-600"
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
         />
       )}
 
-      {/* Arka plandaki yumuşak Ember glow ışıltısı */}
-      {isActive && (
-        <motion.div
-          layoutId="sidebarActiveGlow"
-          className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-rose-600/5 rounded-xl -z-10 blur-sm"
-          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+      {/* İkon & Metin Container */}
+      <div className="flex items-center gap-3.5 flex-1 min-w-0">
+        <Icon
+          size={20}
+          className={`flex-shrink-0 transition-colors duration-200 ${
+            isActive ? 'text-text-bright' : 'text-text-secondary group-hover:text-text-bright'
+          }`}
         />
-      )}
 
-      {/* İkon */}
-      <Icon
-        size={18}
-        className="flex-shrink-0 transition-all duration-300"
-        style={{
-          color: isActive 
-            ? 'var(--color-text-bright)' 
-            : 'var(--color-text-secondary)',
-          filter: isActive ? 'drop-shadow(0 0 6px rgba(249,115,22,0.3))' : 'none'
-        }}
-      />
+        {/* Metin Etiketi */}
+        <AnimatePresence>
+          {isSidebarOpen && label && (
+            <motion.span
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              className={`text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden ${
+                isActive ? 'text-text-bright font-semibold' : 'text-text-secondary font-medium group-hover:text-text-bright'
+              }`}
+            >
+              {label}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
 
-      {/* Metin Etiketi */}
-      <AnimatePresence>
-        {isSidebarOpen && label && (
-          <motion.span
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: 'auto' }}
-            exit={{ opacity: 0, width: 0 }}
-            className="text-[12.5px] font-bold transition-colors duration-300 whitespace-nowrap overflow-hidden"
-            style={{
-              color: isActive ? 'var(--color-text-bright)' : 'var(--color-text-secondary)',
-            }}
-          >
-            {label}
-          </motion.span>
-        )}
-      </AnimatePresence>
-
-      {/* Sayaç */}
+      {/* Dinamik Oyun Sayaç Pill */}
       <AnimatePresence>
         {isSidebarOpen && count !== undefined && count > 0 && (
           <motion.span 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded bg-bg-tertiary text-text-secondary border border-border-subtle group-hover:text-text-bright transition-colors duration-300"
+            className={`text-xs font-mono px-2 py-0.5 rounded-md transition-colors duration-200 flex-shrink-0 ${
+               isActive 
+                ? 'bg-bg-elevated text-text-muted' 
+                : 'bg-bg-hover text-text-secondary group-hover:bg-bg-elevated group-hover:text-text-muted'
+            }`}
           >
             {count}
           </motion.span>
         )}
       </AnimatePresence>
-
-      {badge && (
-        <div className="absolute top-2 right-2">
-          {badge}
-        </div>
-      )}
     </button>
   );
 }

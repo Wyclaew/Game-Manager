@@ -1,20 +1,6 @@
-// components/layout/TopBar.tsx — Üst Araç Çubuğu
-
 import { Search, Grid3X3, List, SortAsc, SortDesc, Filter, RefreshCw } from 'lucide-react';
 import { useGameStore } from '../../stores/useGameStore';
 import type { SortField } from '../../types';
-
-const navTitles: Record<string, string> = {
-  all: 'Tüm Kütüphane',
-  steam: 'Steam Games',
-  epic: 'Epic Games Store',
-  custom: 'Yerel Oyunlar',
-  favorites: 'Favori Oyunlar',
-  playing: 'Aktif Oynananlar',
-  backlog: 'Bekleme Listesi',
-  completed: 'Tamamlananlar',
-  settings: 'Ayarlar',
-};
 
 const sortOptions: { field: SortField; label: string }[] = [
   { field: 'title', label: 'İsim' },
@@ -34,106 +20,89 @@ export function TopBar() {
 
   return (
     <header
-      className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-8 py-6 bg-bg-glass border-b border-border-subtle backdrop-blur-md relative z-10"
+      className="sticky top-0 z-50 bg-[#050609]/80 backdrop-blur-md border-b border-white/[0.02] py-5 px-10 mb-8 flex items-center justify-between"
     >
       {/* Sol: Başlık ve Oyun Sayacı */}
-      <div className="flex items-center gap-4">
-        <h2 className="text-xl font-black font-display text-text-bright tracking-tight">
-          {navTitles[activeNav] ?? 'Tüm Kütüphane'}
+      <div className="flex items-center gap-5">
+        <h2 className="text-2xl font-bold tracking-tight text-white capitalize">
+          {activeNav === 'all' ? 'Tüm Kütüphane' : activeNav.replace('-', ' ')}
         </h2>
         
-        <div className="flex items-center gap-2">
-          <span
-            className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-accent-ember-start/10 border border-accent-ember-start/20 text-accent-ember-start tracking-wider uppercase"
-          >
-            {filteredGames.length} Oyun
+        <div className="flex items-center gap-3">
+          <span className="text-[12px] font-bold px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.05] text-slate-400 tracking-widest uppercase">
+            {filteredGames.length} OYUN
           </span>
           {isSyncing && (
-            <div className="flex items-center justify-center p-1 rounded bg-bg-hover border border-border-subtle">
-              <RefreshCw size={12} className="animate-spin text-orange-500" />
+            <div className="flex items-center justify-center p-1.5 rounded-full bg-cyan-500/10">
+              <RefreshCw size={14} className="animate-spin text-cyan-400" />
             </div>
           )}
         </div>
       </div>
 
-      {/* Sağ Grup: Arama ve Segmented Filtreler */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Arama Kutusu - Focus olunca genişleyen pürüzsüz kapsül */}
+      {/* Sağ Grup: Arama ve Sorting Chips */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Geniş Arama Kutusu */}
         <div className="relative">
-          <Search
-            size={14}
-            className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-secondary"
-          />
+          <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
           <input
             type="text"
             placeholder="Kütüphanede ara..."
             value={filters.search}
             onChange={(e) => setFilter('search', e.target.value)}
-            className="w-48 focus:w-72 bg-bg-elevated text-text-bright text-[12px] placeholder-text-muted pr-4 py-2.5 rounded-full border border-border-subtle focus:border-orange-500/30 outline-none transition-all duration-300 shadow-inner focus:shadow-[0_0_15px_rgba(249,115,22,0.1),inset_0_2px_4px_rgba(0,0,0,0.8)] font-medium"
-            style={{ paddingLeft: '38px' }}
+            className="w-56 focus:w-80 bg-white/[0.03] text-white text-[14px] placeholder-slate-500 pr-5 py-3 rounded-full border border-white/[0.05] focus:border-cyan-500/50 outline-none transition-all duration-300 shadow-inner"
+            style={{ paddingLeft: '44px' }}
           />
         </div>
 
-        {/* Segmented Control - Sıralama Seçenekleri */}
-        <div className="flex items-center gap-1 bg-bg-tertiary p-1.5 rounded-2xl border border-border-subtle shadow-inner">
+        {/* Sorting Control Tags (Sleek Capsule Pills) */}
+        <div className="flex items-center gap-2">
           {sortOptions.map((opt) => {
             const isSelected = sortField === opt.field;
             return (
               <button
                 key={opt.field}
                 onClick={() => setSorting(opt.field)}
-                className={`relative px-3.5 py-1.5 rounded-lg text-[11px] font-bold tracking-wide transition-all duration-300 cursor-pointer flex items-center gap-1.5 outline-none ${
+                className={`flex items-center gap-2 transition-all duration-150 cursor-pointer outline-none ${
                   isSelected 
-                    ? 'text-text-primary bg-bg-elevated border border-border-medium shadow-sm' 
-                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
+                    ? 'bg-cyan-500 text-black px-4 py-2 rounded-full text-xs font-bold'
+                    : 'bg-white/[0.03] text-slate-400 border border-white/[0.04] px-4 py-2 rounded-full text-xs font-medium hover:text-white hover:border-white/[0.1]'
                 }`}
               >
-                {isSelected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-orange-500 to-rose-600 shadow-glow" />
-                )}
                 {opt.label}
                 {isSelected && (
                   sortDirection === 'asc'
-                    ? <SortAsc size={11} className="text-orange-500" />
-                    : <SortDesc size={11} className="text-orange-500" />
+                    ? <SortAsc size={14} className="text-black" />
+                    : <SortDesc size={14} className="text-black" />
                 )}
               </button>
             );
           })}
         </div>
 
-        {/* Segmented Control - Kurulu Filtresi */}
-        <div className="flex items-center bg-bg-tertiary p-1.5 rounded-2xl border border-border-subtle shadow-inner">
-          <button
-            onClick={() => setFilter('installedOnly', !filters.installedOnly)}
-            className={`px-3.5 py-1.5 rounded-lg text-[11px] font-bold tracking-wide transition-all duration-300 cursor-pointer flex items-center gap-1.5 outline-none ${
-              filters.installedOnly 
-                ? 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 shadow-sm' 
-                : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
-            }`}
-          >
-            <Filter size={11} />
-            Kurulu
-          </button>
-        </div>
+        <div className="w-[1px] h-8 bg-white/[0.05] mx-2"></div>
 
-        {/* Görünüm Modu Değiştirici */}
-        <div className="flex items-center gap-1 bg-bg-tertiary p-1.5 rounded-2xl border border-border-subtle shadow-inner">
+        {/* Görünüm Modu Değiştirici (Pills) */}
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-1.5 rounded-lg transition-all duration-300 cursor-pointer outline-none ${
-              viewMode === 'grid' ? 'bg-bg-elevated text-orange-500 shadow-sm' : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
+            className={`transition-all duration-150 cursor-pointer outline-none flex items-center justify-center h-8 w-10 rounded-full ${
+              viewMode === 'grid' 
+                ? 'bg-cyan-500 text-black font-bold' 
+                : 'bg-white/[0.03] text-slate-400 border border-white/[0.04] hover:text-white hover:border-white/[0.1]'
             }`}
           >
-            <Grid3X3 size={13} />
+            <Grid3X3 size={16} />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-1.5 rounded-lg transition-all duration-300 cursor-pointer outline-none ${
-              viewMode === 'list' ? 'bg-bg-elevated text-orange-500 shadow-sm' : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
+            className={`transition-all duration-150 cursor-pointer outline-none flex items-center justify-center h-8 w-10 rounded-full ${
+              viewMode === 'list' 
+                ? 'bg-cyan-500 text-black font-bold' 
+                : 'bg-white/[0.03] text-slate-400 border border-white/[0.04] hover:text-white hover:border-white/[0.1]'
             }`}
           >
-            <List size={13} />
+            <List size={16} />
           </button>
         </div>
       </div>

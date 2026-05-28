@@ -1,178 +1,205 @@
-// components/layout/Sidebar.tsx — Sol Navigasyon Çubuğu (Minimap Rail)
-
+import React from 'react';
 import {
   Gamepad2, Library, Monitor, Swords, FolderOpen,
-  Heart, Clock, Trophy, Settings,
-  RefreshCw, Menu, PanelLeftClose
+  Heart, Clock, Trophy, Settings, RefreshCw, Menu, PanelLeftClose
 } from 'lucide-react';
 import { useGameStore } from '../../stores/useGameStore';
-import { SidebarButton } from '../ui/SidebarButton';
 import { motion } from 'framer-motion';
 import type { NavSection } from '../../types';
 
-interface NavItem {
+interface MenuItem {
   id: NavSection;
   label: string;
-  icon: typeof Gamepad2;
+  icon: typeof Library;
   count?: number;
-  color?: string;
+}
+
+interface MenuSection {
+  title: string;
+  items: MenuItem[];
 }
 
 export function Sidebar() {
   const { activeNav, setActiveNav, stats, isSyncing, syncMessage, isSidebarOpen, toggleSidebar } = useGameStore();
 
-  // Kütüphane grubu
-  const libraryNav: NavItem[] = [
-    { id: 'all', label: 'Tüm Oyunlar', icon: Library, count: stats.totalGames, color: 'var(--color-accent-ember-start)' },
-  ];
-
-  // Platformlar grubu
-  const platformNav: NavItem[] = [
-    { id: 'steam', label: 'Steam', icon: Monitor, count: stats.steamGames, color: '#66c0f4' },
-    { id: 'epic', label: 'Epic Games', icon: Swords, count: stats.epicGames, color: '#ffffff' },
-    { id: 'custom', label: 'Yerel Eklemeler', icon: FolderOpen, count: stats.customGames, color: '#10b981' },
-  ];
-
-  // Koleksiyonlar grubu
-  const collectionNav: NavItem[] = [
-    { id: 'favorites', label: 'Favoriler', icon: Heart, color: '#f43f5e' },
-    { id: 'playing', label: 'Aktif Oynanan', icon: Gamepad2, count: stats.statusCounts.Playing, color: '#f59e0b' },
-    { id: 'backlog', label: 'Beklemede', icon: Clock, count: stats.statusCounts.Backlog, color: '#818cf8' },
-    { id: 'completed', label: 'Tamamlandı', icon: Trophy, count: stats.statusCounts.Completed, color: '#10b981' },
+  const menuSections: MenuSection[] = [
+    {
+      title: 'KÜTÜPHANE',
+      items: [
+        { id: 'all', label: 'Tüm Oyunlar', icon: Library, count: stats.totalGames }
+      ]
+    },
+    {
+      title: 'PLATFORMLAR',
+      items: [
+        { id: 'steam', label: 'Steam', icon: Monitor, count: stats.steamGames },
+        { id: 'epic', label: 'Epic Games', icon: Swords, count: stats.epicGames },
+        { id: 'custom', label: 'Yerel Eklemeler', icon: FolderOpen, count: stats.customGames }
+      ]
+    },
+    {
+      title: 'KOLEKSİYONLAR',
+      items: [
+        { id: 'favorites', label: 'Favoriler', icon: Heart },
+        { id: 'playing', label: 'Aktif Oynanan', icon: Gamepad2, count: stats.statusCounts.Playing },
+        { id: 'backlog', label: 'Beklemede', icon: Clock, count: stats.statusCounts.Backlog },
+        { id: 'completed', label: 'Tamamlandı', icon: Trophy, count: stats.statusCounts.Completed }
+      ]
+    }
   ];
 
   return (
     <motion.aside
       initial={false}
-      animate={{ 
-        width: isSidebarOpen ? 240 : 64,
-        minWidth: isSidebarOpen ? 240 : 64
-      }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="flex flex-col h-full bg-bg-glass border-r border-border-subtle py-6 pb-10 backdrop-blur-xl z-20 overflow-hidden"
+      animate={{ width: isSidebarOpen ? 304 : 88 }} // 304px = w-76
+      transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+      className={`bg-[#08090C] border-r border-white/[0.03] flex flex-col h-screen z-20 relative transition-all duration-150 overflow-y-auto scrollbar-none ${
+        isSidebarOpen ? 'px-6 py-8' : 'px-4 py-8'
+      }`}
     >
-      {/* Logo & Toggle - Üst Alan */}
-      <div className={`flex items-center ${isSidebarOpen ? 'justify-between px-5' : 'justify-center px-0'} pb-6 border-b border-border-subtle w-full mb-6 transition-all duration-300`}>
-        {/* Sadece açıkken göster */}
-        {isSidebarOpen && (
-          <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center bg-accent-ember-start/10 border border-accent-ember-start/30 shadow-glow flex-shrink-0"
+      <div className="w-full flex-1">
+        {/* Header */}
+        <div className={`mb-10 flex items-center ${isSidebarOpen ? 'justify-between space-x-3' : 'justify-center'} w-full`}>
+          {isSidebarOpen ? (
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-cyan-500/10 border border-cyan-500/20 flex-shrink-0">
+                <Gamepad2 className="w-5 h-5 text-cyan-400" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-tight text-white leading-none">
+                  Game Manager
+                </span>
+                <span className="text-[11px] font-mono px-2 py-0.5 mt-1.5 bg-cyan-500/10 text-cyan-400 rounded-md border border-cyan-500/20 w-max tracking-wide">
+                  V2.0 ALPHA
+                </span>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => toggleSidebar()}
+              className="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition-colors focus:outline-none"
             >
-              <Gamepad2 size={16} className="text-orange-500" />
+              <Menu size={22} />
+            </button>
+          )}
+
+          {isSidebarOpen && (
+            <button
+              onClick={() => toggleSidebar()}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition-colors flex-shrink-0 focus:outline-none"
+            >
+              <PanelLeftClose size={20} />
+            </button>
+          )}
+        </div>
+
+        {/* Navigation Rows */}
+        <div className="space-y-6">
+          {menuSections.map((section) => (
+            <div key={section.title} className="w-full">
+              {isSidebarOpen ? (
+                <span className="mt-10 mb-4 block text-[12px] font-bold tracking-widest text-slate-500 uppercase px-5">
+                  {section.title}
+                </span>
+              ) : (
+                <div className="h-[1px] bg-white/[0.03] my-8 w-full" />
+              )}
+
+              <div className="space-y-1.5">
+                {section.items.map((item) => {
+                  const isActive = activeNav === item.id;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => setActiveNav(item.id)}
+                      className={`relative flex items-center justify-between w-full ${
+                        isSidebarOpen ? 'px-5' : 'justify-center px-0'
+                      } py-4 my-1.5 rounded-xl cursor-pointer group transition-all duration-150 ease-out select-none ${
+                        isActive
+                          ? 'bg-gradient-to-r from-cyan-500/[0.06] to-transparent'
+                          : 'bg-transparent hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      {/* The Absolute Strict Marker */}
+                      {isActive && (
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[4px] h-6 bg-cyan-400 rounded-r-md" />
+                      )}
+
+                      <div className="flex items-center space-x-4">
+                        <item.icon
+                          className={`w-[22px] h-[22px] transition-colors duration-150 flex-shrink-0 ${
+                            isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'
+                          }`}
+                        />
+                        {isSidebarOpen && (
+                          <span
+                            className={`text-[15px] transition-colors duration-150 tracking-wide whitespace-nowrap ${
+                              isActive ? 'text-white font-semibold' : 'text-slate-300 group-hover:text-white font-medium'
+                            }`}
+                          >
+                            {item.label}
+                          </span>
+                        )}
+                      </div>
+
+                      {isSidebarOpen && item.count !== undefined && item.count > 0 && (
+                        <span className={`text-[12px] font-mono font-bold px-2.5 py-1 rounded-md transition-colors duration-150 ${
+                          isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/[0.04] group-hover:bg-white/[0.08] text-slate-400 group-hover:text-slate-200'
+                        }`}>
+                          {item.count}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-[13px] font-black font-display text-text-bright tracking-wider uppercase leading-none truncate">
-                GAME MANAGER
+          ))}
+        </div>
+      </div>
+
+      <div className="w-full pt-8 mt-8 border-t border-white/[0.03] flex-shrink-0">
+        {isSyncing && (
+          <div className={`flex items-center ${isSidebarOpen ? 'space-x-3 px-5 py-4' : 'justify-center p-4'} rounded-xl bg-white/[0.02] border border-white/[0.04] mb-4 animate-pulse`}>
+            <RefreshCw size={20} className="animate-spin text-cyan-400 flex-shrink-0" />
+            {isSidebarOpen && (
+              <span className="text-[14px] font-medium text-slate-300 truncate">
+                {syncMessage || 'Eşzamanlanıyor...'}
               </span>
-              <span className="text-[9px] text-text-secondary font-bold mt-1 tracking-widest leading-none truncate">
-                V2.0 STABLE
-              </span>
-            </div>
+            )}
           </div>
         )}
 
-        {/* Toggle Butonu */}
-        <button
-          onClick={() => toggleSidebar()}
-          className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-hover transition-colors outline-none"
+        <div
+          onClick={() => setActiveNav('settings')}
+          className={`relative flex items-center justify-between w-full ${
+            isSidebarOpen ? 'px-5' : 'justify-center px-0'
+          } py-4 rounded-xl cursor-pointer group transition-all duration-150 ease-out select-none ${
+            activeNav === 'settings'
+              ? 'bg-gradient-to-r from-cyan-500/[0.06] to-transparent'
+              : 'bg-transparent hover:bg-white/[0.02]'
+          }`}
         >
-          {isSidebarOpen ? <PanelLeftClose size={18} /> : <Menu size={20} />}
-        </button>
-      </div>
-
-      {/* Ana Navigasyon Grupları */}
-      <div className="flex-1 overflow-y-auto px-3 space-y-6 w-full flex flex-col no-scrollbar overflow-x-hidden">
-        {/* Kütüphane Grubu */}
-        <div className="space-y-2">
-          {isSidebarOpen && (
-            <label className="text-[9px] font-black uppercase text-text-secondary px-3 tracking-widest opacity-60 block">
-              Kütüphane
-            </label>
+          {activeNav === 'settings' && (
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[4px] h-6 bg-cyan-400 rounded-r-md" />
           )}
-          <nav className="space-y-1">
-            {libraryNav.map((item) => (
-              <SidebarButton
-                key={item.id}
-                isActive={activeNav === item.id}
-                onClick={() => setActiveNav(item.id)}
-                icon={item.icon}
-                label={item.label}
-                count={item.count}
-              />
-            ))}
-          </nav>
-        </div>
 
-        {/* Platformlar Grubu */}
-        <div className="space-y-2">
-          {isSidebarOpen && (
-            <label className="text-[9px] font-black uppercase text-text-secondary px-3 tracking-widest opacity-60 block">
-              Platformlar
-            </label>
-          )}
-          <nav className="space-y-1">
-            {platformNav.map((item) => (
-              <SidebarButton
-                key={item.id}
-                isActive={activeNav === item.id}
-                onClick={() => setActiveNav(item.id)}
-                icon={item.icon}
-                label={item.label}
-                count={item.count}
-              />
-            ))}
-          </nav>
-        </div>
-
-        {/* Koleksiyonlar Grubu */}
-        <div className="space-y-2">
-          {isSidebarOpen && (
-            <label className="text-[9px] font-black uppercase text-text-secondary px-3 tracking-widest opacity-60 block">
-              Koleksiyonlar
-            </label>
-          )}
-          <nav className="space-y-1">
-            {collectionNav.map((item) => (
-              <SidebarButton
-                key={item.id}
-                isActive={activeNav === item.id}
-                onClick={() => setActiveNav(item.id)}
-                icon={item.icon}
-                label={item.label}
-                count={item.count}
-              />
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Alt Bölüm — Senkronizasyon & Ayarlar */}
-      <div className="px-3 border-t border-border-subtle w-full pt-4 flex flex-col gap-4 mt-auto overflow-hidden">
-        {/* Senkronizasyon Durumu */}
-        {isSyncing && isSidebarOpen && (
-          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-bg-hover border border-border-subtle animate-pulse">
-            <RefreshCw size={13} className="animate-spin text-orange-500 flex-shrink-0" />
-            <span className="text-[11px] font-bold text-text-secondary truncate">
-              {syncMessage || 'Senkronize ediliyor...'}
-            </span>
+          <div className="flex items-center space-x-4">
+            <Settings
+              className={`w-[22px] h-[22px] transition-colors duration-150 flex-shrink-0 ${
+                activeNav === 'settings' ? 'text-white' : 'text-slate-400 group-hover:text-white'
+              }`}
+            />
+            {isSidebarOpen && (
+              <span
+                className={`text-[15px] transition-colors duration-150 tracking-wide ${
+                  activeNav === 'settings' ? 'text-white font-semibold' : 'text-slate-300 group-hover:text-white font-medium'
+                }`}
+              >
+                Ayarlar
+              </span>
+            )}
           </div>
-        )}
-        
-        {isSyncing && !isSidebarOpen && (
-           <div className="mx-auto p-2 rounded-xl bg-bg-hover border border-border-subtle">
-             <RefreshCw size={14} className="animate-spin text-orange-500" />
-           </div>
-        )}
-
-        {/* Ayarlar Düğmesi */}
-        <div className="w-full">
-          <SidebarButton
-            isActive={activeNav === 'settings'}
-            onClick={() => setActiveNav('settings')}
-            icon={Settings}
-            label={isSidebarOpen ? "Ayarlar" : ""}
-          />
         </div>
       </div>
     </motion.aside>

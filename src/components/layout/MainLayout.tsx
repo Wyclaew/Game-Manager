@@ -18,7 +18,7 @@ export function MainLayout({ onLaunchGame }: MainLayoutProps) {
   const { activeNav, toasts, removeToast } = useGameStore();
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-bg-primary text-text-primary">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#050609] text-white">
       {/* Global Toast Bildirim Sistemi Portal */}
       <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
         <AnimatePresence>
@@ -28,37 +28,39 @@ export function MainLayout({ onLaunchGame }: MainLayoutProps) {
               initial={{ opacity: 0, y: -20, scale: 0.9, x: 20 }}
               animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, x: 50, transition: { duration: 0.2 } }}
-              className={`glass-strong p-4 rounded-xl border border-border-strong flex items-center justify-between shadow-premium pointer-events-auto border-l-[3px] backdrop-blur-md ${
+              className={`bg-[#0D0F16]/90 p-4 rounded-xl border border-white/[0.05] flex items-center justify-between shadow-2xl shadow-black/50 pointer-events-auto backdrop-blur-xl ${
                 t.type === 'error' 
-                  ? 'border-l-accent-rose' 
+                  ? 'border-l-[3px] border-l-rose-500' 
                   : t.type === 'success' 
-                    ? 'border-l-accent-emerald' 
-                    : 'border-l-accent-ember-start'
+                    ? 'border-l-[3px] border-l-emerald-500' 
+                    : 'border-l-[3px] border-l-amber-500'
               }`}
             >
-              <span className="text-[12px] font-bold text-text-bright tracking-wide pr-3">{t.message}</span>
+              <span className="text-[12px] font-semibold text-white tracking-wide pr-3">{t.message}</span>
               <button
                 onClick={() => removeToast(t.id)}
-                className="text-text-secondary hover:text-text-bright transition-colors cursor-pointer outline-none"
+                className="text-slate-400 hover:text-white transition-colors cursor-pointer outline-none"
               >
-                <X size={13} />
+                <X size={14} />
               </button>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
 
-      {/* Sol: Sidebar */}
+      {/* Sol: Premium Snappy Sidebar */}
       <Sidebar />
 
       {/* Sağ: Ana İçerik Alanı */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[radial-gradient(circle_at_center,_var(--border-subtle)_1px,_transparent_1px)] bg-[size:16px_16px]">
-        {/* Üst: Araç çubuğu (Ayarlar sayfası dışında gösterilir) */}
-        {activeNav !== 'settings' && <TopBar />}
-
-        {/* İçerik alanı */}
-        <main className="flex-1 overflow-hidden relative">
-          <AnimatePresence mode="wait">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#050609]">
+        {/* İçerik alanı (Global Safe-Zone p-10/12 ile korunmaktadır) */}
+        <main className="flex-1 overflow-y-auto scrollbar-none relative px-10 pb-12">
+          
+          {/* Üst Araç Çubuğu - Sabit */}
+          {activeNav !== 'settings' && <TopBar />}
+          
+          <div className="mt-4">
+            <AnimatePresence mode="wait">
             <motion.div
               key={activeNav}
               initial={{ opacity: 0, y: 10 }}
@@ -74,6 +76,7 @@ export function MainLayout({ onLaunchGame }: MainLayoutProps) {
               )}
             </motion.div>
           </AnimatePresence>
+          </div>
         </main>
       </div>
 

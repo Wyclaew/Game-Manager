@@ -13,12 +13,13 @@ Bu dosya, projede çalışacak olan yapay zeka geliştirme ajanlarının (AI Age
 * **Hedef İşlev:** Steam & Epic Games Store kütüphanelerini birleştiren, playtime takibi ve oyun başlatma yeteneklerine sahip yerel oyun kütüphanesi yöneticisi.
 * **Hedef Platform:** Windows (Öncelikli) & macOS (İkincil).
 * **Aktif Durum:** 
+  * **Tasarım Yenilemesi (Obsidian Dark & Ember Glow - Faz 12):** Sidebar bileşeni, piksel-kusursuz ve dikey ritimli bir şekilde tamamen sıfırdan yazıldı. Genişlik `w-72 bg-[#090A0F]` ile zengin nefes alma alanlarına kavuşturuldu, buton paddingleri `py-3.5` ve metin boyutu `text-[15px]` yapıldı. Aktif durum göstergesi absolute hizalı şık bir çizgiye dönüştürülerek hizalama kayması (glit) çözüldü. Dinamik sayaç rozetleri (`bg-white/[0.04]`) ve mapped gezinme öğeleri eklendi.
   * **Tasarım Yenilemesi (Cyber-Minimalist Obsidian):** Saf obsidian koyu teması (`#090a0f`) ile Coral-Ember gradyanlı (`from-orange-500 to-rose-600`) mikro etkileşimler ve aktif durum vurguları uygulandı. `framer-motion` kütüphanesi kullanılarak sayfa geçişleri, detay paneli, toast bildirimleri ve oyun kartı hover durumları akıcı mikro animasyonlarla zenginleştirildi. 
   * **Hata Yönetimi ve Veritabanı:** Rust tarafında `thiserror` ve `anyhow` tabanlı merkezi hata yönetimi (`AppError`) kuruldu. SQLite üzerinde arama, platform ve favori filtrelemeleri için kompozit indeks optimizasyonları tamamlandı.
   * **Frontend:** React + TypeScript + Zustand tabanlı sanallaştırılmış modern frontend, global dynamic Toast bildirim portalı ve tema sistemiyle zenginleştirildi.
   * Proje en son tasarım ve mimari revizyonla birlikte GitHub reposuna commitlendi.
   * **Otomatik Platform Yol Tespiti (Faz 10):** Rust tarafında Windows ve macOS işletim sistemlerinde varsayılan Steam ve Epic Games kurulum yollarını kontrol edip dönen `detect_platform_paths` komutu eklendi. Ayarlar menüsü ilk yüklendiğinde yollar boşsa bu komut yardımıyla otomatik doldurulmaktadır.
-  * **Ayarlar ve Sidebar Tasarım İyileştirmesi:** Sidebar genişliği `w-60` yapılarak ikon ve metin bir arada daha okunabilir hale getirilmiş, alt kısımdaki dikey karmaşa giderilmiştir. Ayarlar menüsü ekranı ortalayacak şekilde `max-w-5xl` sınırıyla 2 sütunlu şık kart yapısına geçirilmiş, girdi alanlarındaki padding çakışmaları çözülmüştür. Tüm kartlar ve toggle butonları koyu/açık mod ile tam uyumlu hale getirilmiştir.
+  * **Ayarlar ve Sidebar Tasarım İyileştirmesi:** Ayarlar menüsü ekranı ortalayacak şekilde `max-w-5xl` sınırıyla 2 sütunlu şık kart yapısına geçirilmiş, girdi alanlarındaki padding çakışmaları çözülmüştür. Tüm kartlar ve toggle butonları koyu/açık mod ile tam uyumlu hale getirilmiştir.
 
 
 ---
