@@ -68,7 +68,7 @@ export function GameGrid({ onLaunchGame }: GameGridProps) {
         >
           {/* Buzlu cam çember içinde placeholder ikon */}
           <div
-            className="w-20 h-20 rounded-full flex items-center justify-center bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.08)] mb-6 shadow-premium backdrop-blur-md"
+            className="w-20 h-20 rounded-full flex items-center justify-center bg-bg-glass border border-border-medium mb-6 shadow-premium backdrop-blur-md"
           >
             <Gamepad2 size={32} className="text-text-secondary group-hover:text-orange-500 transition-colors duration-300" />
           </div>
@@ -159,8 +159,8 @@ function ListRow({ game, onLaunch }: { game: Game; onLaunch: (g: Game) => void }
 
   return (
     <motion.div
-      whileHover={{ scale: 1.005, backgroundColor: 'rgba(255,255,255,0.03)' }}
-      className="flex items-center gap-4 px-5 py-3 rounded-xl cursor-pointer bg-[rgba(20,22,28,0.5)] border border-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.08)] transition-all duration-300 shadow-sm"
+      whileHover={{ scale: 1.005, backgroundColor: 'var(--color-bg-hover)' }}
+      className="flex items-center gap-4 px-5 py-3 rounded-xl cursor-pointer bg-bg-secondary border border-border-subtle hover:border-border-medium transition-all duration-300 shadow-sm"
       onClick={() => setSelectedGame(game)}
     >
       {/* Mini kapak */}
@@ -191,7 +191,7 @@ function ListRow({ game, onLaunch }: { game: Game; onLaunch: (g: Game) => void }
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.04)] text-text-secondary">
+        <span className="text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded bg-bg-hover border border-border-subtle text-text-secondary">
           {game.status}
         </span>
         

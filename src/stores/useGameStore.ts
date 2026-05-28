@@ -29,6 +29,7 @@ interface GameStore {
   viewMode: ViewMode;               // Grid/Liste görünümü
   activeNav: NavSection;            // Aktif sidebar sekmesi
   isDetailOpen: boolean;            // Detay paneli açık mı?
+  isSidebarOpen: boolean;           // Sidebar açık/katlanmış mı?
   stats: LibraryStats;              // Kütüphane istatistikleri
   theme: 'dark' | 'light';          // Tema (dark/light)
   toasts: Toast[];                  // Toast bildirimleri
@@ -41,6 +42,7 @@ interface GameStore {
   setViewMode: (mode: ViewMode) => void;
   setActiveNav: (nav: NavSection) => void;
   toggleDetail: (open?: boolean) => void;
+  toggleSidebar: (open?: boolean) => void;
   updateGameStatus: (gameId: number, status: GameStatus) => Promise<void>;
   toggleFavorite: (gameId: number) => Promise<void>;
   setSyncing: (syncing: boolean, message?: string) => void;
@@ -93,6 +95,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   viewMode: 'grid',
   activeNav: 'all',
   isDetailOpen: false,
+  isSidebarOpen: true,
   stats: {
     totalGames: 0,
     installedGames: 0,
@@ -219,6 +222,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   toggleDetail: (open) => set((s) => ({ isDetailOpen: open ?? !s.isDetailOpen })),
+  
+  toggleSidebar: (open) => set((s) => ({ isSidebarOpen: open ?? !s.isSidebarOpen })),
 
   setSyncing: (syncing, message) => set({
     isSyncing: syncing,

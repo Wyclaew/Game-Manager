@@ -115,6 +115,8 @@
   --color-bg-tertiary: var(--bg-tertiary);
   --color-bg-elevated: var(--bg-elevated);
   --color-bg-hover: var(--bg-hover);
+  --color-bg-glass: var(--bg-glass);
+  --color-bg-glass-strong: var(--bg-glass-strong);
   
   --color-border-subtle: var(--border-subtle);
   --color-border-medium: var(--border-medium);

@@ -35,7 +35,7 @@ export function TopBar() {
 
   return (
     <header
-      className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-8 py-6 bg-[rgba(9,10,15,0.35)] border-b border-[rgba(255,255,255,0.04)] backdrop-blur-md relative"
+      className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-8 py-6 bg-bg-glass border-b border-border-subtle backdrop-blur-md relative z-10"
     >
       {/* Sol: Başlık ve Oyun Sayacı */}
       <div className="flex items-center gap-4">
@@ -45,12 +45,12 @@ export function TopBar() {
         
         <div className="flex items-center gap-2">
           <span
-            className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-gradient-to-r from-orange-500/10 to-rose-600/10 border border-orange-500/20 text-orange-500 tracking-wider uppercase"
+            className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-accent-ember-start/10 border border-accent-ember-start/20 text-accent-ember-start tracking-wider uppercase"
           >
             {filteredGames.length} Oyun
           </span>
           {isSyncing && (
-            <div className="flex items-center justify-center p-1 rounded bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)]">
+            <div className="flex items-center justify-center p-1 rounded bg-bg-hover border border-border-subtle">
               <RefreshCw size={12} className="animate-spin text-orange-500" />
             </div>
           )}
@@ -70,12 +70,13 @@ export function TopBar() {
             placeholder="Kütüphanede ara..."
             value={filters.search}
             onChange={(e) => setFilter('search', e.target.value)}
-            className="w-48 focus:w-72 bg-[rgba(9,10,15,0.6)] text-text-bright text-[12px] placeholder-[rgba(255,255,255,0.25)] pl-10 pr-4 py-2.5 rounded-full border border-[rgba(255,255,255,0.04)] focus:border-orange-500/30 outline-none transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] focus:shadow-[0_0_15px_rgba(249,115,22,0.1),inset_0_2px_4px_rgba(0,0,0,0.8)] font-medium"
+            className="w-48 focus:w-72 bg-bg-elevated text-text-bright text-[12px] placeholder-text-muted pr-4 py-2.5 rounded-full border border-border-subtle focus:border-orange-500/30 outline-none transition-all duration-300 shadow-inner focus:shadow-[0_0_15px_rgba(249,115,22,0.1),inset_0_2px_4px_rgba(0,0,0,0.8)] font-medium"
+            style={{ paddingLeft: '38px' }}
           />
         </div>
 
         {/* Segmented Control - Sıralama Seçenekleri */}
-        <div className="flex items-center bg-[rgba(255,255,255,0.02)] p-1 rounded-xl border border-[rgba(255,255,255,0.04)]">
+        <div className="flex items-center gap-1 bg-bg-tertiary p-1 rounded-xl border border-border-subtle shadow-inner">
           {sortOptions.map((opt) => {
             const isSelected = sortField === opt.field;
             return (
@@ -84,12 +85,12 @@ export function TopBar() {
                 onClick={() => setSorting(opt.field)}
                 className={`relative px-3.5 py-1.5 rounded-lg text-[11px] font-bold tracking-wide transition-all duration-300 cursor-pointer flex items-center gap-1.5 outline-none ${
                   isSelected 
-                    ? 'text-text-bright bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.04)] shadow-sm' 
-                    : 'text-text-secondary hover:text-text-bright'
+                    ? 'text-text-primary bg-bg-elevated border border-border-medium shadow-sm' 
+                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
                 }`}
               >
                 {isSelected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-orange-500 to-rose-600 shadow-[0_0_6px_rgba(249,115,22,0.6)]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-orange-500 to-rose-600 shadow-glow" />
                 )}
                 {opt.label}
                 {isSelected && (
@@ -103,13 +104,13 @@ export function TopBar() {
         </div>
 
         {/* Segmented Control - Kurulu Filtresi */}
-        <div className="flex items-center bg-[rgba(255,255,255,0.02)] p-1 rounded-xl border border-[rgba(255,255,255,0.04)]">
+        <div className="flex items-center bg-bg-tertiary p-1 rounded-xl border border-border-subtle shadow-inner">
           <button
             onClick={() => setFilter('installedOnly', !filters.installedOnly)}
             className={`px-3.5 py-1.5 rounded-lg text-[11px] font-bold tracking-wide transition-all duration-300 cursor-pointer flex items-center gap-1.5 outline-none ${
               filters.installedOnly 
-                ? 'text-emerald-400 bg-emerald-500/5 border border-emerald-500/20 shadow-sm' 
-                : 'text-text-secondary hover:text-text-bright'
+                ? 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 shadow-sm' 
+                : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
             }`}
           >
             <Filter size={11} />
@@ -118,11 +119,11 @@ export function TopBar() {
         </div>
 
         {/* Görünüm Modu Değiştirici */}
-        <div className="flex items-center bg-[rgba(255,255,255,0.02)] p-1 rounded-xl border border-[rgba(255,255,255,0.04)]">
+        <div className="flex items-center gap-1 bg-bg-tertiary p-1 rounded-xl border border-border-subtle shadow-inner">
           <button
             onClick={() => setViewMode('grid')}
             className={`p-1.5 rounded-lg transition-all duration-300 cursor-pointer outline-none ${
-              viewMode === 'grid' ? 'bg-[rgba(255,255,255,0.04)] text-orange-500' : 'text-text-secondary hover:text-text-bright'
+              viewMode === 'grid' ? 'bg-bg-elevated text-orange-500 shadow-sm' : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
             }`}
           >
             <Grid3X3 size={13} />
@@ -130,7 +131,7 @@ export function TopBar() {
           <button
             onClick={() => setViewMode('list')}
             className={`p-1.5 rounded-lg transition-all duration-300 cursor-pointer outline-none ${
-              viewMode === 'list' ? 'bg-[rgba(255,255,255,0.04)] text-orange-500' : 'text-text-secondary hover:text-text-bright'
+              viewMode === 'list' ? 'bg-bg-elevated text-orange-500 shadow-sm' : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
             }`}
           >
             <List size={13} />
@@ -140,7 +141,7 @@ export function TopBar() {
         {/* Tema Değiştirici */}
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="p-2.5 rounded-xl border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.02)] text-text-secondary hover:text-orange-500 hover:border-orange-500/20 hover:bg-[rgba(255,255,255,0.04)] transition-all duration-300 cursor-pointer flex items-center justify-center outline-none"
+          className="p-2.5 rounded-xl border border-border-subtle bg-bg-tertiary text-text-secondary hover:text-orange-500 hover:border-orange-500/20 hover:bg-bg-hover transition-all duration-300 cursor-pointer flex items-center justify-center outline-none shadow-inner"
         >
           {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
         </button>

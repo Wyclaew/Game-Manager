@@ -1,7 +1,8 @@
 // components/ui/SidebarButton.tsx — Cyber-Minimalist Obsidian Sidebar Düğmesi
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useGameStore } from '../../stores/useGameStore';
 
 interface SidebarButtonProps {
   isActive: boolean;
@@ -20,13 +21,14 @@ export function SidebarButton({
   count,
   badge
 }: SidebarButtonProps) {
+  const { isSidebarOpen } = useGameStore();
+
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-start gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative cursor-pointer outline-none select-none text-left"
+      className={`w-full flex items-center ${isSidebarOpen ? 'justify-start' : 'justify-center'} gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative cursor-pointer outline-none select-none text-left ${isActive ? 'bg-bg-hover border-border-subtle' : 'bg-transparent border-transparent hover:bg-[rgba(128,128,128,0.05)]'}`}
       style={{
-        background: isActive ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
-        border: isActive ? '1px solid rgba(255, 255, 255, 0.04)' : '1px solid transparent',
+        borderWidth: '1px'
       }}
     >
       {/* Sol kenarda yer alan Ember gradyan aktiflik çubuğu */}
@@ -60,21 +62,35 @@ export function SidebarButton({
       />
 
       {/* Metin Etiketi */}
-      <span
-        className="text-[12.5px] font-bold transition-colors duration-300 truncate"
-        style={{
-          color: isActive ? 'var(--color-text-bright)' : 'var(--color-text-secondary)',
-        }}
-      >
-        {label}
-      </span>
+      <AnimatePresence>
+        {isSidebarOpen && label && (
+          <motion.span
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: 'auto' }}
+            exit={{ opacity: 0, width: 0 }}
+            className="text-[12.5px] font-bold transition-colors duration-300 truncate"
+            style={{
+              color: isActive ? 'var(--color-text-bright)' : 'var(--color-text-secondary)',
+            }}
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
 
       {/* Sayaç */}
-      {count !== undefined && count > 0 && (
-        <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded bg-[rgba(255,255,255,0.04)] text-text-secondary border border-[rgba(255,255,255,0.03)] group-hover:text-text-bright transition-colors duration-300">
-          {count}
-        </span>
-      )}
+      <AnimatePresence>
+        {isSidebarOpen && count !== undefined && count > 0 && (
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded bg-bg-tertiary text-text-secondary border border-border-subtle group-hover:text-text-bright transition-colors duration-300"
+          >
+            {count}
+          </motion.span>
+        )}
+      </AnimatePresence>
 
       {badge && (
         <div className="absolute top-2 right-2">
