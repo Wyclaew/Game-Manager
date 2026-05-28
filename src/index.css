@@ -61,51 +61,51 @@
 }
 
 [data-theme="light"] {
-  /* Light Theme (Studio Soft Warm Edit) */
-  --bg-primary: #0f1015; /* Sadece hafifçe aydınlatılmış soft bir obsidian kontrastı */
-  --bg-secondary: rgba(25, 27, 34, 0.7);
-  --bg-tertiary: #191c24;
-  --bg-elevated: rgba(35, 38, 48, 0.75);
-  --bg-hover: rgba(255, 255, 255, 0.05);
+  /* Light Theme (Studio Premium Soft Light - macOS / Windows Premium Contrast) */
+  --bg-primary: #f8fafc; /* Slate 50 - Temiz ve parlak zemin */
+  --bg-secondary: rgba(255, 255, 255, 0.75); /* Translucent pure white */
+  --bg-tertiary: #f1f5f9; /* Slate 100 */
+  --bg-elevated: #e2e8f0; /* Slate 200 */
+  --bg-hover: rgba(0, 0, 0, 0.03);
   
   /* Kenarlık Renkleri */
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-medium: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-subtle: rgba(15, 23, 42, 0.04);
+  --border-medium: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.15);
   
   /* Metin Renkleri */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-bright: #ffffff;
+  --text-primary: #0f172a; /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --text-muted: #64748b; /* Slate 500 */
+  --text-bright: #000000;
   
   /* Vurgu Renkleri */
-  --accent-ember-start: #fb923c;
-  --accent-ember-end: #fb7185;
-  --accent-orange-glow: rgba(251, 146, 60, 0.12);
-  --accent-rose-glow: rgba(251, 113, 133, 0.12);
-  --accent-teal: #14b8a6;
-  --accent-teal-glow: rgba(20, 184, 166, 0.12);
+  --accent-ember-start: #f97316;
+  --accent-ember-end: #e11d48;
+  --accent-orange-glow: rgba(249, 115, 22, 0.1);
+  --accent-rose-glow: rgba(225, 29, 72, 0.1);
+  --accent-teal: #0d9488;
+  --accent-teal-glow: rgba(13, 148, 136, 0.1);
   
-  --accent-emerald: #34d399;
-  --accent-emerald-glow: rgba(52, 211, 153, 0.1);
-  --accent-amber: #fbbf24;
-  --accent-rose: #fda4af;
+  --accent-emerald: #10b981;
+  --accent-emerald-glow: rgba(16, 185, 129, 0.08);
+  --accent-amber: #d97706;
+  --accent-rose: #f43f5e;
   
   /* Platform Renkleri */
-  --steam: #1e293b;
-  --steam-accent: #38bdf8;
-  --epic: #1e1b4b;
-  --epic-accent: #ffffff;
+  --steam: #e2e8f0;
+  --steam-accent: #0284c7;
+  --epic: #f1f5f9;
+  --epic-accent: #0f172a;
   
   /* Cam Efekti Arka Planları */
-  --bg-glass: rgba(20, 22, 28, 0.75);
-  --bg-glass-strong: rgba(13, 14, 18, 0.95);
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --bg-glass-strong: rgba(255, 255, 255, 0.95);
   
   /* Gölgeler */
-  --shadow-premium: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
-  --shadow-glow: 0 0 25px rgba(251, 146, 60, 0.15);
-  --shadow-inner: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+  --shadow-premium: 0 30px 60px -15px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 25px rgba(249, 115, 22, 0.08);
+  --shadow-inner: inset 0 2px 4px rgba(15, 23, 42, 0.05);
 }
 
 @theme {
@@ -222,6 +222,11 @@ body {
                     linear-gradient(rgba(255,255,255,0.005) 1px, transparent 0),
                     linear-gradient(90deg, rgba(255,255,255,0.005) 1px, transparent 0);
   background-size: 16px 16px, 8px 8px, 8px 8px;
+}
+[data-theme="light"] .wireframe-pattern {
+  background-image: radial-gradient(rgba(249, 115, 22, 0.015) 1px, transparent 0),
+                    linear-gradient(rgba(0,0,0,0.002) 1px, transparent 0),
+                    linear-gradient(90deg, rgba(0,0,0,0.002) 1px, transparent 0);
 }
 
 /* Özel Animasyonlar */

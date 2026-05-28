@@ -46,6 +46,7 @@ pub fn run() {
             commands::games::get_all_games,
             commands::games::update_game_status,
             commands::games::toggle_favorite,
+            commands::games::detect_platform_paths,
             // Platform senkronizasyonu
             commands::sync::sync_steam_library,
             commands::sync::sync_local_installations,

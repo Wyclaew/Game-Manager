@@ -6,6 +6,7 @@ import {
   User, FolderOpen, AlertCircle, Wifi
 } from 'lucide-react';
 import Database from '@tauri-apps/plugin-sql';
+import { invoke } from '@tauri-apps/api/core';
 import { useSync } from '../../hooks/useSync';
 import { useGameStore } from '../../stores/useGameStore';
 import { InputField } from '../ui/InputField';
@@ -35,11 +36,40 @@ export function SettingsPanel() {
       );
       const settingsMap = new Map(rows.map(r => [r.key, r.value]));
 
-      setSteamApiKey(settingsMap.get('steam_api_key') ?? '');
-      setSteamId(settingsMap.get('steam_id') ?? '');
-      setSteamPath(settingsMap.get('steam_path') ?? '');
-      setEpicPath(settingsMap.get('epic_path') ?? '');
-      setAutoSync(settingsMap.get('auto_sync') !== 'false');
+      const loadedSteamApiKey = settingsMap.get('steam_api_key') ?? '';
+      const loadedSteamId = settingsMap.get('steam_id') ?? '';
+      let loadedSteamPath = settingsMap.get('steam_path') ?? '';
+      let loadedEpicPath = settingsMap.get('epic_path') ?? '';
+      const loadedAutoSync = settingsMap.get('auto_sync') !== 'false';
+
+      setSteamApiKey(loadedSteamApiKey);
+      setSteamId(loadedSteamId);
+      setAutoSync(loadedAutoSync);
+
+      // Eğer yollardan biri veya her ikisi de boşsa otomatik tespit et
+      if (!loadedSteamPath || !loadedEpicPath) {
+        try {
+          const detected = await invoke<{
+            steam_path: string | null;
+            epic_path: string | null;
+            os: string;
+          }>('detect_platform_paths');
+
+          if (!loadedSteamPath && detected.steam_path) {
+            loadedSteamPath = detected.steam_path;
+            addToast(`Varsayılan Steam yolu otomatik olarak tespit edildi (${detected.os})`, 'info');
+          }
+          if (!loadedEpicPath && detected.epic_path) {
+            loadedEpicPath = detected.epic_path;
+            addToast(`Varsayılan Epic Games yolu otomatik olarak tespit edildi (${detected.os})`, 'info');
+          }
+        } catch (detectErr) {
+          console.warn('Otomatik yol tespiti başarısız:', detectErr);
+        }
+      }
+
+      setSteamPath(loadedSteamPath);
+      setEpicPath(loadedEpicPath);
     } catch (err) {
       console.error('Ayarlar yüklenirken hata:', err);
       addToast('Ayarlar yüklenemedi', 'error');
@@ -98,184 +128,190 @@ export function SettingsPanel() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8 max-w-3xl select-none">
-      {/* Başlık */}
-      <div>
-        <h2 className="text-xl font-black font-display text-text-bright tracking-wide mb-1 uppercase">
-          Ayarlar
-        </h2>
-        <p className="text-xs text-text-secondary font-semibold">
-          Platform entegrasyonları, dizinler ve genel uygulama ayarları
-        </p>
-      </div>
-
-      {/* Steam Entegrasyonu */}
-      <section
-        className="rounded-2xl p-6 space-y-6 bg-[rgba(20,22,28,0.6)] border border-[rgba(255,255,255,0.04)] shadow-premium backdrop-blur-md"
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500/10 border border-sky-500/25"
-          >
-            <Monitor size={18} className="text-sky-400" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
-              Steam Entegrasyonu
-            </h3>
-            <p className="text-[11px] text-text-secondary font-semibold">
-              API anahtarınız ile kütüphane verilerini güvenle indirin
-            </p>
-          </div>
-        </div>
-
-        {/* Form Elemanları */}
-        <div className="space-y-4">
-          <InputField
-            label="Steam API Anahtarı"
-            type="password"
-            value={steamApiKey}
-            onChange={(e) => setSteamApiKey(e.target.value)}
-            placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            icon={Key}
-          />
-          <p className="text-[11px] text-text-secondary px-1 font-semibold">
-            API anahtarınızı{' '}
-            <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline font-bold">steamcommunity.com/dev/apikey</a>
-            {' '}adresinden alabilirsiniz.
+    <div className="flex-1 overflow-y-auto px-8 py-8 select-none">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Başlık Bölümü */}
+        <div className="border-b border-border-subtle pb-6">
+          <h2 className="text-2xl font-black font-display text-text-bright tracking-wide mb-1.5 uppercase">
+            Ayarlar
+          </h2>
+          <p className="text-xs text-text-secondary font-semibold">
+            Platform entegrasyonları, oyun dizinleri ve genel uygulama ayarları
           </p>
         </div>
 
-        <div className="space-y-4">
-          <InputField
-            label="SteamID64"
-            type="text"
-            value={steamId}
-            onChange={(e) => setSteamId(e.target.value)}
-            placeholder="76561198XXXXXXXXX"
-            icon={User}
-          />
-          <p className="text-[11px] text-text-secondary px-1 font-semibold">
-            Kullanıcı SteamID değerinizi{' '}
-            <a href="https://steamid.io" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline font-bold">steamid.io</a>
-            {' '}üzerinden bulabilirsiniz.
-          </p>
-        </div>
+        {/* 2 Sütunlu Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          {/* Steam Entegrasyon Kartı */}
+          <section className="rounded-2xl p-6 space-y-6 bg-bg-secondary/60 border border-border-subtle shadow-premium backdrop-blur-md">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500/10 border border-sky-500/25">
+                <Monitor size={18} className="text-sky-400" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
+                  Steam Entegrasyonu
+                </h3>
+                <p className="text-[11px] text-text-secondary font-semibold">
+                  API anahtarınız ile kütüphane verilerini güvenle indirin
+                </p>
+              </div>
+            </div>
 
-        <InputField
-          label="Steam Kurulum Yolu"
-          type="text"
-          value={steamPath}
-          onChange={(e) => setSteamPath(e.target.value)}
-          placeholder="C:\Program Files (x86)\Steam"
-          icon={FolderOpen}
-        />
+            <div className="space-y-4">
+              <InputField
+                label="Steam API Anahtarı"
+                type="password"
+                value={steamApiKey}
+                onChange={(e) => setSteamApiKey(e.target.value)}
+                placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                icon={Key}
+              />
+              <p className="text-[10px] text-text-secondary px-1 font-semibold leading-relaxed">
+                API anahtarınızı{' '}
+                <a
+                  href="https://steamcommunity.com/dev/apikey"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-orange-500 hover:underline font-bold"
+                >
+                  steamcommunity.com/dev/apikey
+                </a>
+                {' '}adresinden alabilirsiniz.
+              </p>
+            </div>
 
-        <ActionButton
-          variant="primary"
-          icon={RefreshCw}
-          onClick={handleSteamSync}
-          disabled={isSyncing || !steamApiKey || !steamId}
-          loading={isSyncing}
-          className="w-full py-3.5 tracking-wider font-display text-[11px] shadow-[0_0_15px_rgba(249,115,22,0.2)]"
-        >
-          {isSyncing ? syncMessage : 'STEAM KÜTÜPHANESİNİ EŞZAMANLA'}
-        </ActionButton>
+            <div className="space-y-4">
+              <InputField
+                label="SteamID64"
+                type="text"
+                value={steamId}
+                onChange={(e) => setSteamId(e.target.value)}
+                placeholder="76561198XXXXXXXXX"
+                icon={User}
+              />
+              <p className="text-[10px] text-text-secondary px-1 font-semibold leading-relaxed">
+                Kullanıcı SteamID değerinizi{' '}
+                <a
+                  href="https://steamid.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-orange-500 hover:underline font-bold"
+                >
+                  steamid.io
+                </a>
+                {' '}üzerinden bulabilirsiniz.
+              </p>
+            </div>
 
-        {syncError && (
-          <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-rose-500/5 border border-rose-500/15">
-            <AlertCircle size={15} className="text-rose-500 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-rose-300 font-semibold leading-relaxed">
-              {syncError}
-            </p>
-          </div>
-        )}
-      </section>
-
-      {/* Epic Games Entegrasyonu */}
-      <section
-        className="rounded-2xl p-6 space-y-6 bg-[rgba(20,22,28,0.6)] border border-[rgba(255,255,255,0.04)] shadow-premium backdrop-blur-md"
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center bg-teal-500/10 border border-teal-500/25"
-          >
-            <Swords size={18} className="text-teal-400" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
-              Epic Games Entegrasyonu
-            </h3>
-            <p className="text-[11px] text-text-secondary font-semibold">
-              OAuth akışı ve cihaz kodları üzerinden Epic hesabınızı bağlayın
-            </p>
-          </div>
-        </div>
-
-        <InputField
-          label="Epic Games Kurulum Yolu"
-          type="text"
-          value={epicPath}
-          onChange={(e) => setEpicPath(e.target.value)}
-          placeholder="C:\Program Files\Epic Games"
-          icon={FolderOpen}
-        />
-
-        <ActionButton
-          variant="secondary"
-          icon={Wifi}
-          onClick={handleEpicSync}
-          disabled={isSyncing}
-          className="w-full py-3.5 tracking-wider font-display text-[11px]"
-        >
-          EPIC GAMES HESABINI BAĞLA
-        </ActionButton>
-      </section>
-
-      {/* Genel Ayarlar */}
-      <section
-        className="rounded-2xl p-6 space-y-6 bg-[rgba(20,22,28,0.6)] border border-[rgba(255,255,255,0.04)] shadow-premium backdrop-blur-md"
-      >
-        <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
-          Genel Ayarlar
-        </h3>
-
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-text-bright tracking-wide">
-              AÇILIŞTA OTOMATİK EŞZAMANLAMA
-            </p>
-            <p className="text-[11px] text-text-secondary font-semibold mt-1">
-              Uygulama açılırken bağlı platform kütüphanelerini otomatik olarak tarar
-            </p>
-          </div>
-          <button
-            className={`relative w-11 h-6 rounded-full transition-all duration-300 cursor-pointer outline-none ${
-              autoSync ? 'bg-gradient-to-r from-orange-500 to-rose-600 shadow-[0_0_10px_rgba(249,115,22,0.3)]' : 'bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.05)]'
-            }`}
-            onClick={() => setAutoSync(!autoSync)}
-          >
-            <div
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
-                autoSync ? 'left-6' : 'left-1'
-              }`}
+            <InputField
+              label="Steam Kurulum Yolu"
+              type="text"
+              value={steamPath}
+              onChange={(e) => setSteamPath(e.target.value)}
+              placeholder="C:\Program Files (x86)\Steam"
+              icon={FolderOpen}
             />
-          </button>
-        </div>
-      </section>
 
-      {/* Kaydet Butonu */}
-      <div className="flex justify-start">
-        <ActionButton
-          variant="primary"
-          icon={Save}
-          onClick={saveSettings}
-          disabled={isSaving}
-          loading={isSaving}
-          className="py-3.5 px-8 font-display tracking-wider text-[11px] shadow-[0_0_20px_rgba(249,115,22,0.2)]"
-        >
-          AYARLARI KAYDET
-        </ActionButton>
+            <ActionButton
+              variant="primary"
+              icon={RefreshCw}
+              onClick={handleSteamSync}
+              disabled={isSyncing || !steamApiKey || !steamId}
+              loading={isSyncing}
+              className="w-full py-3.5 tracking-wider font-display text-[11px] shadow-[0_0_15px_rgba(249,115,22,0.2)]"
+            >
+              {isSyncing ? syncMessage : 'STEAM KÜTÜPHANESİNİ EŞZAMANLA'}
+            </ActionButton>
+
+            {syncError && (
+              <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-rose-500/5 border border-rose-500/15">
+                <AlertCircle size={15} className="text-rose-500 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-rose-300 font-semibold leading-relaxed">
+                  {syncError}
+                </p>
+              </div>
+            )}
+          </section>
+
+          {/* Epic Games Entegrasyon Kartı */}
+          <section className="rounded-2xl p-6 space-y-6 bg-bg-secondary/60 border border-border-subtle shadow-premium backdrop-blur-md">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-teal-500/10 border border-teal-500/25">
+                <Swords size={18} className="text-teal-400" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
+                  Epic Games Entegrasyonu
+                </h3>
+                <p className="text-[11px] text-text-secondary font-semibold">
+                  OAuth akışı ve cihaz kodları üzerinden Epic hesabınızı bağlayın
+                </p>
+              </div>
+            </div>
+
+            <InputField
+              label="Epic Games Kurulum Yolu"
+              type="text"
+              value={epicPath}
+              onChange={(e) => setEpicPath(e.target.value)}
+              placeholder="C:\Program Files\Epic Games"
+              icon={FolderOpen}
+            />
+
+            <ActionButton
+              variant="secondary"
+              icon={Wifi}
+              onClick={handleEpicSync}
+              disabled={isSyncing}
+              className="w-full py-3.5 tracking-wider font-display text-[11px]"
+            >
+              EPIC GAMES HESABINI BAĞLA
+            </ActionButton>
+          </section>
+        </div>
+
+        {/* Genel Ayarlar Kartı - Alt / Tam Genişlik */}
+        <section className="rounded-2xl p-6 space-y-6 bg-bg-secondary/60 border border-border-subtle shadow-premium backdrop-blur-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-bold text-text-bright tracking-wide uppercase">
+                Açılışta Otomatik Eşzamanlama
+              </p>
+              <p className="text-[11px] text-text-secondary font-semibold mt-1">
+                Uygulama açılırken bağlı platform kütüphanelerini otomatik olarak tarar
+              </p>
+            </div>
+            <button
+              className={`relative w-11 h-6 rounded-full transition-all duration-300 cursor-pointer outline-none ${
+                autoSync
+                  ? 'bg-gradient-to-r from-orange-500 to-rose-600 shadow-[0_0_10px_rgba(249,115,22,0.3)]'
+                  : 'bg-bg-elevated border border-border-subtle'
+              }`}
+              onClick={() => setAutoSync(!autoSync)}
+            >
+              <div
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
+                  autoSync ? 'left-6' : 'left-1'
+                }`}
+              />
+            </button>
+          </div>
+        </section>
+
+        {/* En Alt - Kaydet Butonu */}
+        <div className="flex justify-end pt-6 border-t border-border-subtle">
+          <ActionButton
+            variant="primary"
+            icon={Save}
+            onClick={saveSettings}
+            disabled={isSaving}
+            loading={isSaving}
+            className="py-3.5 px-8 font-display tracking-wider text-[11px] shadow-[0_0_20px_rgba(249,115,22,0.2)]"
+          >
+            AYARLARI KAYDET
+          </ActionButton>
+        </div>
       </div>
     </div>
   );

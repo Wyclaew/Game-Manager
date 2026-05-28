@@ -23,7 +23,7 @@ export function SidebarButton({
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-center p-3.5 rounded-xl transition-all duration-300 group relative cursor-pointer outline-none"
+      className="w-full flex items-center justify-start gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative cursor-pointer outline-none select-none text-left"
       style={{
         background: isActive ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
         border: isActive ? '1px solid rgba(255, 255, 255, 0.04)' : '1px solid transparent',
@@ -49,31 +49,38 @@ export function SidebarButton({
 
       {/* İkon */}
       <Icon
-        size={18}
+        size={16}
         className="flex-shrink-0 transition-all duration-300"
         style={{
           color: isActive 
             ? 'var(--color-text-bright)' 
-            : 'var(--color-text-muted)',
+            : 'var(--color-text-secondary)',
           filter: isActive ? 'drop-shadow(0 0 6px rgba(249,115,22,0.3))' : 'none'
         }}
       />
+
+      {/* Metin Etiketi */}
+      <span
+        className="text-[12.5px] font-bold transition-colors duration-300 truncate"
+        style={{
+          color: isActive ? 'var(--color-text-bright)' : 'var(--color-text-secondary)',
+        }}
+      >
+        {label}
+      </span>
+
+      {/* Sayaç */}
+      {count !== undefined && count > 0 && (
+        <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded bg-[rgba(255,255,255,0.04)] text-text-secondary border border-[rgba(255,255,255,0.03)] group-hover:text-text-bright transition-colors duration-300">
+          {count}
+        </span>
+      )}
 
       {badge && (
         <div className="absolute top-2 right-2">
           {badge}
         </div>
       )}
-
-      {/* Hover Tooltip */}
-      <div className="absolute left-[84px] bg-[rgba(13,14,18,0.95)] border border-[rgba(255,255,255,0.08)] text-[11px] font-bold py-2 px-3.5 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright flex items-center gap-2 backdrop-blur-md">
-        <span>{label}</span>
-        {count !== undefined && count > 0 && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[rgba(255,255,255,0.05)] text-text-muted font-sans font-medium">
-            {count}
-          </span>
-        )}
-      </div>
     </button>
   );
 }

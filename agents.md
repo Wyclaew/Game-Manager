@@ -17,6 +17,8 @@ Bu dosya, projede çalışacak olan yapay zeka geliştirme ajanlarının (AI Age
   * **Hata Yönetimi ve Veritabanı:** Rust tarafında `thiserror` ve `anyhow` tabanlı merkezi hata yönetimi (`AppError`) kuruldu. SQLite üzerinde arama, platform ve favori filtrelemeleri için kompozit indeks optimizasyonları tamamlandı.
   * **Frontend:** React + TypeScript + Zustand tabanlı sanallaştırılmış modern frontend, global dynamic Toast bildirim portalı ve tema sistemiyle zenginleştirildi.
   * Proje en son tasarım ve mimari revizyonla birlikte GitHub reposuna commitlendi.
+  * **Otomatik Platform Yol Tespiti (Faz 10):** Rust tarafında Windows ve macOS işletim sistemlerinde varsayılan Steam ve Epic Games kurulum yollarını kontrol edip dönen `detect_platform_paths` komutu eklendi. Ayarlar menüsü ilk yüklendiğinde yollar boşsa bu komut yardımıyla otomatik doldurulmaktadır.
+  * **Ayarlar ve Sidebar Tasarım İyileştirmesi:** Sidebar genişliği `w-60` yapılarak ikon ve metin bir arada daha okunabilir hale getirilmiş, alt kısımdaki dikey karmaşa giderilmiştir. Ayarlar menüsü ekranı ortalayacak şekilde `max-w-5xl` sınırıyla 2 sütunlu şık kart yapısına geçirilmiş, girdi alanlarındaki padding çakışmaları çözülmüştür. Tüm kartlar ve toggle butonları koyu/açık mod ile tam uyumlu hale getirilmiştir.
 
 
 ---

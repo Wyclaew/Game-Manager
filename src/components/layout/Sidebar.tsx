@@ -18,7 +18,7 @@ interface NavItem {
 }
 
 export function Sidebar() {
-  const { activeNav, setActiveNav, stats, isSyncing } = useGameStore();
+  const { activeNav, setActiveNav, stats, isSyncing, syncMessage } = useGameStore();
 
   // Kütüphane grubu
   const libraryNav: NavItem[] = [
@@ -42,90 +42,96 @@ export function Sidebar() {
 
   return (
     <aside
-      className="flex flex-col h-screen w-20 min-w-20 bg-[rgba(9,10,15,0.85)] border-r border-[rgba(255,255,255,0.04)] items-center py-6 backdrop-blur-xl z-20"
+      className="flex flex-col h-screen w-60 min-w-60 bg-[rgba(9,10,15,0.85)] border-r border-[rgba(255,255,255,0.04)] py-6 backdrop-blur-xl z-20"
     >
       {/* Logo - Üst Alan */}
-      <div className="flex items-center justify-center pb-6 border-b border-[rgba(255,255,255,0.04)] w-full mb-6">
+      <div className="flex items-center gap-3 px-6 pb-6 border-b border-[rgba(255,255,255,0.04)] w-full mb-6">
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-orange-500/10 to-rose-600/10 border border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.15)] group cursor-pointer"
+          className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-orange-500/10 to-rose-600/10 border border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.15)]"
         >
-          <Gamepad2 size={18} className="text-orange-500 group-hover:scale-110 transition-transform duration-300" />
+          <Gamepad2 size={16} className="text-orange-500" />
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[13px] font-black font-display text-text-bright tracking-wider uppercase leading-none">
+            GAME MANAGER
+          </span>
+          <span className="text-[9px] text-text-secondary font-bold mt-1 tracking-widest leading-none">
+            V2.0 STABLE
+          </span>
         </div>
       </div>
 
       {/* Ana Navigasyon Grupları */}
-      <div className="flex-1 overflow-y-auto px-3 space-y-5 w-full flex flex-col items-center">
-        {/* Kütüphane */}
-        <nav className="w-full space-y-1">
-          {libraryNav.map((item) => (
-            <SidebarButton
-              key={item.id}
-              isActive={activeNav === item.id}
-              onClick={() => setActiveNav(item.id)}
-              icon={item.icon}
-              label={item.label}
-              count={item.count}
-            />
-          ))}
-        </nav>
+      <div className="flex-1 overflow-y-auto px-4 space-y-6 w-full flex flex-col">
+        {/* Kütüphane Grubu */}
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase text-text-secondary px-3 tracking-widest opacity-60">
+            Kütüphane
+          </label>
+          <nav className="space-y-1">
+            {libraryNav.map((item) => (
+              <SidebarButton
+                key={item.id}
+                isActive={activeNav === item.id}
+                onClick={() => setActiveNav(item.id)}
+                icon={item.icon}
+                label={item.label}
+                count={item.count}
+              />
+            ))}
+          </nav>
+        </div>
 
-        {/* İnce Ayırıcı */}
-        <div className="w-10 h-px bg-[rgba(255,255,255,0.04)]" />
+        {/* Platformlar Grubu */}
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase text-text-secondary px-3 tracking-widest opacity-60">
+            Platformlar
+          </label>
+          <nav className="space-y-1">
+            {platformNav.map((item) => (
+              <SidebarButton
+                key={item.id}
+                isActive={activeNav === item.id}
+                onClick={() => setActiveNav(item.id)}
+                icon={item.icon}
+                label={item.label}
+                count={item.count}
+              />
+            ))}
+          </nav>
+        </div>
 
-        {/* Platformlar */}
-        <nav className="w-full space-y-1">
-          {platformNav.map((item) => (
-            <SidebarButton
-              key={item.id}
-              isActive={activeNav === item.id}
-              onClick={() => setActiveNav(item.id)}
-              icon={item.icon}
-              label={item.label}
-              count={item.count}
-            />
-          ))}
-        </nav>
-
-        {/* İnce Ayırıcı */}
-        <div className="w-10 h-px bg-[rgba(255,255,255,0.04)]" />
-
-        {/* Koleksiyonlar / Durumlar */}
-        <nav className="w-full space-y-1">
-          {collectionNav.map((item) => (
-            <SidebarButton
-              key={item.id}
-              isActive={activeNav === item.id}
-              onClick={() => setActiveNav(item.id)}
-              icon={item.icon}
-              label={item.label}
-              count={item.count}
-            />
-          ))}
-        </nav>
+        {/* Koleksiyonlar Grubu */}
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase text-text-secondary px-3 tracking-widest opacity-60">
+            Koleksiyonlar
+          </label>
+          <nav className="space-y-1">
+            {collectionNav.map((item) => (
+              <SidebarButton
+                key={item.id}
+                isActive={activeNav === item.id}
+                onClick={() => setActiveNav(item.id)}
+                icon={item.icon}
+                label={item.label}
+                count={item.count}
+              />
+            ))}
+          </nav>
+        </div>
       </div>
 
-      {/* Alt Bölüm — Senkronizasyon, İstatistikler & Ayarlar */}
-      <div className="px-3 border-t border-[rgba(255,255,255,0.04)] w-full pt-5 flex flex-col items-center gap-5 mt-auto">
+      {/* Alt Bölüm — Senkronizasyon & Ayarlar */}
+      <div className="px-4 border-t border-[rgba(255,255,255,0.04)] w-full pt-4 flex flex-col gap-4 mt-auto">
         {/* Senkronizasyon Durumu */}
         {isSyncing && (
-          <div className="relative group p-3 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] animate-pulse">
-            <RefreshCw size={15} className="animate-spin text-orange-500" />
-            <div className="absolute left-[84px] bg-[rgba(13,14,18,0.95)] border border-[rgba(255,255,255,0.08)] text-[11px] font-bold py-2 px-3.5 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright">
-              Kütüphane Eşzamanlanıyor...
-            </div>
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] animate-pulse">
+            <RefreshCw size={13} className="animate-spin text-orange-500 flex-shrink-0" />
+            <span className="text-[11px] font-bold text-text-secondary truncate">
+              {syncMessage || 'Senkronize ediliyor...'}
+            </span>
           </div>
         )}
-
-        {/* Alt İstatistikler */}
-        <div className="flex flex-col items-center gap-2.5">
-          {/* Toplam Süre İstatistiği */}
-          <div className="relative group p-3 rounded-xl bg-[rgba(255,255,255,0.01)] hover:bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.08)] transition-all duration-300 cursor-default">
-            <Clock size={16} className="text-emerald-500" />
-            <div className="absolute left-[84px] top-1/2 -translate-y-1/2 bg-[rgba(13,14,18,0.95)] border border-[rgba(255,255,255,0.08)] text-[11px] font-bold py-2 px-3.5 rounded-lg opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none shadow-premium z-50 whitespace-nowrap text-text-bright">
-              Oynama Süresi: {stats.totalPlaytimeHours} Saat
-            </div>
-          </div>
-        </div>
 
         {/* Ayarlar Düğmesi */}
         <div className="w-full">
