@@ -1,5 +1,4 @@
-// components/settings/SettingsPanel.tsx — Ayarlar Sayfası (Concept A)
-// Steam API Key, SteamID64, Epic hesap bilgileri, asimetrik butonlar ve Toast bildirim entegrasyonu
+// components/settings/SettingsPanel.tsx — Ayarlar Sayfası
 
 import { useState, useEffect } from 'react';
 import {
@@ -9,9 +8,10 @@ import {
 import Database from '@tauri-apps/plugin-sql';
 import { useSync } from '../../hooks/useSync';
 import { useGameStore } from '../../stores/useGameStore';
+import { InputField } from '../ui/InputField';
+import { ActionButton } from '../ui/ActionButton';
 
 export function SettingsPanel() {
-  // Form durumları
   const [steamApiKey, setSteamApiKey] = useState('');
   const [steamId, setSteamId] = useState('');
   const [steamPath, setSteamPath] = useState('');
@@ -23,7 +23,6 @@ export function SettingsPanel() {
   const { syncSteam, syncEpic } = useSync();
   const { isSyncing, syncMessage, addToast } = useGameStore();
 
-  // Ayarları veritabanından yükle
   useEffect(() => {
     loadSettings();
   }, []);
@@ -47,7 +46,6 @@ export function SettingsPanel() {
     }
   };
 
-  // Ayarları veritabanına kaydet
   const saveSettings = async () => {
     setIsSaving(true);
     setSyncError('');
@@ -78,7 +76,6 @@ export function SettingsPanel() {
     }
   };
 
-  // Steam senkronizasyonu başlat
   const handleSteamSync = async () => {
     setSyncError('');
     try {
@@ -90,7 +87,6 @@ export function SettingsPanel() {
     }
   };
 
-  // Epic senkronizasyonu başlat
   const handleEpicSync = async () => {
     setSyncError('');
     try {
@@ -102,184 +98,160 @@ export function SettingsPanel() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8 max-w-3xl animate-fade-in select-none">
+    <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8 max-w-3xl select-none">
       {/* Başlık */}
       <div>
-        <h2 className="text-2xl font-bold font-display text-text-bright mb-1">
+        <h2 className="text-xl font-black font-display text-text-bright tracking-wide mb-1 uppercase">
           Ayarlar
         </h2>
-        <p className="text-sm text-text-secondary">
-          Platform bağlantıları ve uygulama yapılandırması
+        <p className="text-xs text-text-secondary font-semibold">
+          Platform entegrasyonları, dizinler ve genel uygulama ayarları
         </p>
       </div>
 
-      {/* ==========================================
-          Steam Yapılandırması
-          ========================================== */}
+      {/* Steam Entegrasyonu */}
       <section
-        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle shadow-premium"
+        className="rounded-2xl p-6 space-y-6 bg-[rgba(20,22,28,0.6)] border border-[rgba(255,255,255,0.04)] shadow-premium backdrop-blur-md"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500/10"
+            className="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500/10 border border-sky-500/25"
           >
             <Monitor size={18} className="text-sky-400" />
           </div>
           <div>
-            <h3 className="text-base font-bold font-display text-text-bright">
+            <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
               Steam Entegrasyonu
             </h3>
-            <p className="text-xs text-text-secondary">
-              Steam Web API ile kütüphanenizi senkronize edin
+            <p className="text-[11px] text-text-secondary font-semibold">
+              API anahtarınız ile kütüphane verilerini güvenle indirin
             </p>
           </div>
         </div>
 
-        {/* Steam API Key */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <Key size={13} className="text-accent-orange" />
-            Steam API Anahtarı
-          </label>
-          <input
+        {/* Form Elemanları */}
+        <div className="space-y-4">
+          <InputField
+            label="Steam API Anahtarı"
             type="password"
             value={steamApiKey}
             onChange={(e) => setSteamApiKey(e.target.value)}
             placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            className="input-premium w-full font-mono text-xs"
+            icon={Key}
           />
-          <p className="text-xs text-text-muted mt-1.5">
+          <p className="text-[11px] text-text-secondary px-1 font-semibold">
             API anahtarınızı{' '}
-            <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener noreferrer" className="text-accent-orange hover:underline font-semibold">steamcommunity.com/dev/apikey</a>
+            <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline font-bold">steamcommunity.com/dev/apikey</a>
             {' '}adresinden alabilirsiniz.
           </p>
         </div>
 
-        {/* SteamID64 */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <User size={13} className="text-accent-orange" />
-            SteamID64
-          </label>
-          <input
+        <div className="space-y-4">
+          <InputField
+            label="SteamID64"
             type="text"
             value={steamId}
             onChange={(e) => setSteamId(e.target.value)}
             placeholder="76561198XXXXXXXXX"
-            className="input-premium w-full font-mono text-xs"
+            icon={User}
           />
-          <p className="text-xs text-text-muted mt-1.5">
-            SteamID'nizi{' '}
-            <a href="https://steamid.io" target="_blank" rel="noopener noreferrer" className="text-accent-orange hover:underline font-semibold">steamid.io</a>
+          <p className="text-[11px] text-text-secondary px-1 font-semibold">
+            Kullanıcı SteamID değerinizi{' '}
+            <a href="https://steamid.io" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline font-bold">steamid.io</a>
             {' '}üzerinden bulabilirsiniz.
           </p>
         </div>
 
-        {/* Steam Kurulum Yolu */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <FolderOpen size={13} className="text-accent-orange" />
-            Steam Kurulum Yolu
-          </label>
-          <input
-            type="text"
-            value={steamPath}
-            onChange={(e) => setSteamPath(e.target.value)}
-            className="input-premium w-full font-mono text-xs"
-          />
-        </div>
+        <InputField
+          label="Steam Kurulum Yolu"
+          type="text"
+          value={steamPath}
+          onChange={(e) => setSteamPath(e.target.value)}
+          placeholder="C:\Program Files (x86)\Steam"
+          icon={FolderOpen}
+        />
 
-        {/* Steam Senkronizasyon Butonu */}
-        <button
-          className="btn-primary flex items-center gap-2.5 w-full justify-center py-3 cursor-pointer"
+        <ActionButton
+          variant="primary"
+          icon={RefreshCw}
           onClick={handleSteamSync}
           disabled={isSyncing || !steamApiKey || !steamId}
-          style={{
-            opacity: isSyncing || !steamApiKey || !steamId ? 0.5 : 1,
-          }}
+          loading={isSyncing}
+          className="w-full py-3.5 tracking-wider font-display text-[11px] shadow-[0_0_15px_rgba(249,115,22,0.2)]"
         >
-          <RefreshCw size={15} className={isSyncing ? 'animate-spin' : ''} />
-          {isSyncing ? syncMessage : 'Steam Kütüphanesini Senkronize Et'}
-        </button>
+          {isSyncing ? syncMessage : 'STEAM KÜTÜPHANESİNİ EŞZAMANLA'}
+        </ActionButton>
 
         {syncError && (
-          <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/25">
-            <AlertCircle size={15} className="text-accent-rose flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-accent-rose font-medium">
+          <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-rose-500/5 border border-rose-500/15">
+            <AlertCircle size={15} className="text-rose-500 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-rose-300 font-semibold leading-relaxed">
               {syncError}
             </p>
           </div>
         )}
       </section>
 
-      {/* ==========================================
-          Epic Games Yapılandırması
-          ========================================== */}
+      {/* Epic Games Entegrasyonu */}
       <section
-        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle shadow-premium"
+        className="rounded-2xl p-6 space-y-6 bg-[rgba(20,22,28,0.6)] border border-[rgba(255,255,255,0.04)] shadow-premium backdrop-blur-md"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center bg-accent-teal/10"
+            className="w-10 h-10 rounded-xl flex items-center justify-center bg-teal-500/10 border border-teal-500/25"
           >
-            <Swords size={18} className="text-accent-teal" />
+            <Swords size={18} className="text-teal-400" />
           </div>
           <div>
-            <h3 className="text-base font-bold font-display text-text-bright">
+            <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
               Epic Games Entegrasyonu
             </h3>
-            <p className="text-xs text-text-secondary">
-              OAuth akışı ile Epic Games kütüphanenizi bağlayın
+            <p className="text-[11px] text-text-secondary font-semibold">
+              OAuth akışı ve cihaz kodları üzerinden Epic hesabınızı bağlayın
             </p>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-xs font-bold text-text-muted uppercase tracking-wider">
-            <FolderOpen size={13} className="text-accent-teal" />
-            Epic Games Kurulum Yolu
-          </label>
-          <input
-            type="text"
-            value={epicPath}
-            onChange={(e) => setEpicPath(e.target.value)}
-            className="input-premium w-full font-mono text-xs"
-          />
-        </div>
+        <InputField
+          label="Epic Games Kurulum Yolu"
+          type="text"
+          value={epicPath}
+          onChange={(e) => setEpicPath(e.target.value)}
+          placeholder="C:\Program Files\Epic Games"
+          icon={FolderOpen}
+        />
 
-        <button
-          className="flex items-center gap-2.5 w-full justify-center py-3 rounded-xl font-bold font-display text-xs tracking-wider border border-border-medium text-text-primary hover:bg-bg-hover hover:border-border-strong transition-all duration-200 cursor-pointer"
+        <ActionButton
+          variant="secondary"
+          icon={Wifi}
           onClick={handleEpicSync}
           disabled={isSyncing}
+          className="w-full py-3.5 tracking-wider font-display text-[11px]"
         >
-          <Wifi size={15} />
-          Epic Games Hesabını Bağla
-        </button>
+          EPIC GAMES HESABINI BAĞLA
+        </ActionButton>
       </section>
 
-      {/* ==========================================
-          Genel Ayarlar
-          ========================================== */}
+      {/* Genel Ayarlar */}
       <section
-        className="rounded-2xl p-6 space-y-5 bg-bg-secondary border border-border-subtle shadow-premium"
+        className="rounded-2xl p-6 space-y-6 bg-[rgba(20,22,28,0.6)] border border-[rgba(255,255,255,0.04)] shadow-premium backdrop-blur-md"
       >
-        <h3 className="text-base font-bold font-display text-text-bright">
+        <h3 className="text-sm font-bold font-display text-text-bright tracking-wide uppercase">
           Genel Ayarlar
         </h3>
 
-        {/* Otomatik senkronizasyon toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-text-primary">
-              Başlangıçta Otomatik Senkronizasyon
+            <p className="text-xs font-bold text-text-bright tracking-wide">
+              AÇILIŞTA OTOMATİK EŞZAMANLAMA
             </p>
-            <p className="text-xs text-text-muted">
-              Uygulama açıldığında kütüphaneleri otomatik güncelle
+            <p className="text-[11px] text-text-secondary font-semibold mt-1">
+              Uygulama açılırken bağlı platform kütüphanelerini otomatik olarak tarar
             </p>
           </div>
           <button
-            className={`relative w-11 h-6 rounded-full transition-all duration-300 cursor-pointer ${
-              autoSync ? 'bg-accent-orange' : 'bg-bg-hover'
+            className={`relative w-11 h-6 rounded-full transition-all duration-300 cursor-pointer outline-none ${
+              autoSync ? 'bg-gradient-to-r from-orange-500 to-rose-600 shadow-[0_0_10px_rgba(249,115,22,0.3)]' : 'bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.05)]'
             }`}
             onClick={() => setAutoSync(!autoSync)}
           >
@@ -292,16 +264,18 @@ export function SettingsPanel() {
         </div>
       </section>
 
-      {/* Kaydet butonu */}
-      <div className="flex items-center gap-3">
-        <button
-          className="btn-primary flex items-center gap-2 px-6 py-3 cursor-pointer shadow-premium"
+      {/* Kaydet Butonu */}
+      <div className="flex justify-start">
+        <ActionButton
+          variant="primary"
+          icon={Save}
           onClick={saveSettings}
           disabled={isSaving}
+          loading={isSaving}
+          className="py-3.5 px-8 font-display tracking-wider text-[11px] shadow-[0_0_20px_rgba(249,115,22,0.2)]"
         >
-          <Save size={15} />
-          {isSaving ? 'Kaydediliyor...' : 'Ayarları Kaydet'}
-        </button>
+          AYARLARI KAYDET
+        </ActionButton>
       </div>
     </div>
   );

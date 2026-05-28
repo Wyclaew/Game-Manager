@@ -1,6 +1,6 @@
 /* =============================================
    Game Manager — Global Stiller (CSS Tema Sistemi)
-   Concept A: Matte Charcoal & Burnt Orange (Premium Studio Edit)
+   Design Language: Cyber-Minimalist Obsidian & Ember
    ============================================= */
 
 /* Google Fonts — Modern Tipografi */
@@ -13,33 +13,34 @@
    Dinamik Tema Değişkenleri
    ============================================= */
 :root {
-  /* Dark Theme (Matte Charcoal & Burnt Orange - Varsayılan) */
-  --bg-primary: #0a0a0d;
-  --bg-secondary: #121217;
-  --bg-tertiary: #191921;
-  --bg-elevated: #22222d;
-  --bg-hover: #2b2b3a;
+  /* Dark Theme (Cyber-Minimalist Obsidian - Varsayılan) */
+  --bg-primary: #090a0f; /* Pure Obsidian Dark */
+  --bg-secondary: rgba(20, 22, 28, 0.7); /* Translucent surface panel */
+  --bg-tertiary: #14161c;
+  --bg-elevated: rgba(30, 32, 40, 0.75);
+  --bg-hover: rgba(255, 255, 255, 0.04);
   
   /* Kenarlık Renkleri */
-  --border-subtle: rgba(255, 255, 255, 0.03);
-  --border-medium: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-medium: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
   
   /* Metin Renkleri */
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #5e6b7c;
+  --text-primary: #f1f5f9;
+  --text-secondary: #64748b; /* Slate Grey */
+  --text-muted: #475569;
   --text-bright: #ffffff;
   
-  /* Vurgu Renkleri (Burnt Orange & Muted Teal) */
-  --accent-orange: #e05a2b;
-  --accent-orange-hover: #f16c3d;
-  --accent-orange-glow: rgba(224, 90, 43, 0.18);
-  --accent-teal: #1f9e90;
-  --accent-teal-glow: rgba(31, 158, 144, 0.18);
+  /* Vurgu Renkleri (Ember Gradient & Muted Teal) */
+  --accent-ember-start: #f97316; /* Orange-500 */
+  --accent-ember-end: #e11d48; /* Rose-600 */
+  --accent-orange-glow: rgba(249, 115, 22, 0.15);
+  --accent-rose-glow: rgba(225, 29, 72, 0.15);
+  --accent-teal: #0d9488;
+  --accent-teal-glow: rgba(13, 148, 136, 0.15);
   
   --accent-emerald: #10b981;
-  --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+  --accent-emerald-glow: rgba(16, 185, 129, 0.1);
   --accent-amber: #d97706;
   --accent-rose: #f43f5e;
   
@@ -50,60 +51,61 @@
   --epic-accent: #ffffff;
   
   /* Cam Efekti Arka Planları */
-  --bg-glass: rgba(18, 18, 23, 0.7);
-  --bg-glass-strong: rgba(18, 18, 23, 0.88);
+  --bg-glass: rgba(13, 14, 18, 0.75);
+  --bg-glass-strong: rgba(9, 10, 15, 0.95);
   
   /* Gölgeler */
-  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 25px rgba(224, 90, 43, 0.18);
-  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  --shadow-premium: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 25px rgba(249, 115, 22, 0.15);
+  --shadow-inner: inset 0 2px 5px rgba(0, 0, 0, 0.8);
 }
 
 [data-theme="light"] {
   /* Light Theme (Studio Soft Warm Edit) */
-  --bg-primary: #f2f2f5;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #e9e9ee;
-  --bg-elevated: #dddde5;
-  --bg-hover: #ced0db;
+  --bg-primary: #0f1015; /* Sadece hafifçe aydınlatılmış soft bir obsidian kontrastı */
+  --bg-secondary: rgba(25, 27, 34, 0.7);
+  --bg-tertiary: #191c24;
+  --bg-elevated: rgba(35, 38, 48, 0.75);
+  --bg-hover: rgba(255, 255, 255, 0.05);
   
   /* Kenarlık Renkleri */
-  --border-subtle: rgba(0, 0, 0, 0.03);
-  --border-medium: rgba(0, 0, 0, 0.06);
-  --border-strong: rgba(0, 0, 0, 0.12);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-medium: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
   
   /* Metin Renkleri */
-  --text-primary: #181820;
-  --text-secondary: #4a5568;
-  --text-muted: #718096;
-  --text-bright: #0a0a0d;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-bright: #ffffff;
   
   /* Vurgu Renkleri */
-  --accent-orange: #d94b1a;
-  --accent-orange-hover: #c13e11;
-  --accent-orange-glow: rgba(217, 75, 26, 0.1);
-  --accent-teal: #178377;
-  --accent-teal-glow: rgba(23, 131, 119, 0.1);
+  --accent-ember-start: #fb923c;
+  --accent-ember-end: #fb7185;
+  --accent-orange-glow: rgba(251, 146, 60, 0.12);
+  --accent-rose-glow: rgba(251, 113, 133, 0.12);
+  --accent-teal: #14b8a6;
+  --accent-teal-glow: rgba(20, 184, 166, 0.12);
   
-  --accent-emerald: #059669;
-  --accent-emerald-glow: rgba(5, 150, 105, 0.1);
-  --accent-amber: #b45309;
-  --accent-rose: #e11d48;
+  --accent-emerald: #34d399;
+  --accent-emerald-glow: rgba(52, 211, 153, 0.1);
+  --accent-amber: #fbbf24;
+  --accent-rose: #fda4af;
   
   /* Platform Renkleri */
-  --steam: #e2e8f0;
-  --steam-accent: #0284c7;
-  --epic: #f1f5f9;
-  --epic-accent: #111115;
+  --steam: #1e293b;
+  --steam-accent: #38bdf8;
+  --epic: #1e1b4b;
+  --epic-accent: #ffffff;
   
   /* Cam Efekti Arka Planları */
-  --bg-glass: rgba(255, 255, 255, 0.72);
-  --bg-glass-strong: rgba(255, 255, 255, 0.9);
+  --bg-glass: rgba(20, 22, 28, 0.75);
+  --bg-glass-strong: rgba(13, 14, 18, 0.95);
   
   /* Gölgeler */
-  --shadow-premium: 0 15px 35px -10px rgba(74, 85, 104, 0.15);
-  --shadow-glow: 0 0 20px rgba(217, 75, 26, 0.1);
-  --shadow-inner: inset 0 2px 4px 0 rgba(74, 85, 104, 0.08);
+  --shadow-premium: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
+  --shadow-glow: 0 0 25px rgba(251, 146, 60, 0.15);
+  --shadow-inner: inset 0 2px 5px rgba(0, 0, 0, 0.8);
 }
 
 @theme {
@@ -123,8 +125,8 @@
   --color-text-muted: var(--text-muted);
   --color-text-bright: var(--text-bright);
   
-  --color-accent-orange: var(--accent-orange);
-  --color-accent-orange-hover: var(--accent-orange-hover);
+  --color-accent-ember-start: var(--accent-ember-start);
+  --color-accent-ember-end: var(--accent-ember-end);
   --color-accent-orange-glow: var(--accent-orange-glow);
   --color-accent-teal: var(--accent-teal);
   --color-accent-teal-glow: var(--accent-teal-glow);
@@ -169,6 +171,7 @@ html {
 body {
   min-height: 100vh;
   overflow: hidden;
+  background-color: var(--color-bg-primary);
 }
 
 #root {
@@ -179,8 +182,8 @@ body {
    Kaydırma Çubuğu (Scrollbar)
    ============================================= */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -188,176 +191,45 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 99px;
-  border: 1px solid transparent;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-orange);
-}
-
-/* =============================================
-   Animasyon Tanımları
-   ============================================= */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideInUp {
-  from { transform: translateY(28px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes scaleIn {
-  from { transform: scale(0.97); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes pulse-glow-orange {
-  0%, 100% { box-shadow: 0 0 20px var(--color-accent-orange-glow); }
-  50% { box-shadow: 0 0 35px var(--color-accent-orange-glow), 0 0 50px var(--color-accent-orange-glow); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-/* =============================================
-   Yardımcı Sınıflar (Utilities)
-   ============================================= */
-.animate-fade-in {
-  animation: fadeIn 0.3s var(--ease-smooth) forwards;
-}
-
-.animate-slide-right {
-  animation: slideInRight 0.35s var(--ease-spring) forwards;
-}
-
-.animate-slide-up {
-  animation: slideInUp 0.45s var(--ease-spring) forwards;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.25s var(--ease-smooth) forwards;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+  background: var(--color-accent-ember-start);
 }
 
 /* Cam Efekti (Glassmorphism) */
 .glass {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-premium);
 }
 
 .glass-strong {
   background: var(--bg-glass-strong);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   border: 1px solid var(--border-medium);
   box-shadow: var(--shadow-premium);
 }
 
-/* Tel Kafes Desen Arka Planı (Hover Detayı) */
+/* Tel Kafes Desen Arka Planı (Cyber-Minimalist Edit) */
 .wireframe-pattern {
-  background-image: radial-gradient(var(--accent-orange-glow) 1px, transparent 0),
-                    linear-gradient(rgba(255,255,255,0.01) 1px, transparent 0),
-                    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 0);
+  background-image: radial-gradient(rgba(249, 115, 22, 0.04) 1px, transparent 0),
+                    linear-gradient(rgba(255,255,255,0.005) 1px, transparent 0),
+                    linear-gradient(90deg, rgba(255,255,255,0.005) 1px, transparent 0);
   background-size: 16px 16px, 8px 8px, 8px 8px;
 }
 
-/* Premium Asimetrik Buton Stili (Concept A) */
-.btn-primary {
-  background: linear-gradient(135deg, var(--color-accent-orange), #a33814);
-  color: white;
-  padding: 0.625rem 1.5rem;
-  border-radius: 0.5rem 1.25rem 0.5rem 1.25rem; /* Asimetrik, premium kesim */
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.825rem;
-  letter-spacing: 0.05em;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  box-shadow: 0 4px 15px var(--color-accent-orange-glow);
-  transition: all 0.25s var(--ease-smooth);
-  position: relative;
-  overflow: hidden;
+/* Özel Animasyonlar */
+@keyframes pulse-glow-ember {
+  0%, 100% { box-shadow: 0 0 15px rgba(249, 115, 22, 0.15); }
+  50% { box-shadow: 0 0 25px rgba(249, 115, 22, 0.3), 0 0 35px rgba(225, 29, 72, 0.15); }
 }
 
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
-  transform: rotate(30deg);
-  transition: all 0.5s ease;
-  pointer-events: none;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--color-accent-orange-glow);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.btn-primary:hover::after {
-  left: 120%;
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-/* Premium İç Gölgeli Input */
-.input-premium {
-  background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border-medium);
-  box-shadow: var(--shadow-inner);
-  color: var(--color-text-primary);
-  border-radius: 0.75rem;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
-  outline: none;
-  transition: border-color 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth), background-color 0.25s var(--ease-smooth);
-}
-
-.input-premium:focus {
-  background: var(--color-bg-secondary);
-  border-color: var(--color-accent-orange);
-  box-shadow: var(--shadow-inner), 0 0 0 3px var(--color-accent-orange-glow);
-}
-
-.input-premium::placeholder {
-  color: var(--color-text-muted);
-}
-
-/* Kart Hover Efekti */
-.card-hover {
-  transition: all 0.35s var(--ease-spring);
-  border: 1px solid var(--border-subtle);
-}
-
-.card-hover:hover {
-  transform: translateY(-6px) scale(1.015);
-  border-color: var(--color-accent-orange);
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5), var(--shadow-glow);
-}
-
-[data-theme="light"] .card-hover:hover {
-  box-shadow: 0 15px 35px -10px rgba(113, 128, 150, 0.2), var(--shadow-glow);
+.animate-pulse-glow {
+  animation: pulse-glow-ember 4s ease-in-out infinite;
 }

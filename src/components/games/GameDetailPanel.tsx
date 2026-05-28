@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { useGameStore, formatPlaytime } from '../../stores/useGameStore';
 import { GameStatusBadge } from './GameStatusBadge';
+import { ActionButton } from '../ui/ActionButton';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Game, GameStatus, PlatformName } from '../../types';
 
 interface GameDetailPanelProps {
@@ -35,7 +37,7 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
   const { selectedGame, isDetailOpen, toggleDetail, updateGameStatus, toggleFavorite, addToast } = useGameStore();
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
-  if (!selectedGame || !isDetailOpen) return null;
+  if (!selectedGame) return null;
 
   const game = selectedGame;
   const isInstalled = typeof game.is_installed === 'boolean' ? game.is_installed : game.is_installed === 1;
@@ -62,212 +64,223 @@ export function GameDetailPanel({ onLaunch }: GameDetailPanelProps) {
   };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 transition-opacity duration-300 bg-black/50 backdrop-blur-[5px]"
-        onClick={() => toggleDetail(false)}
-      />
-
-      {/* Panel */}
-      <div
-        className="fixed top-0 right-0 h-full z-50 flex flex-col animate-slide-right glass-strong border-l border-border-strong shadow-premium"
-        style={{
-          width: '450px',
-          maxWidth: '100vw',
-        }}
-      >
-        {/* Banner görseli */}
-        <div className="relative h-56 flex-shrink-0 overflow-hidden select-none">
-          <img
-            src={game.banner_image_url ?? game.cover_image_url ?? ''}
-            alt={game.title}
-            className="w-full h-full object-cover"
-            style={{ filter: 'brightness(0.6)' }}
-          />
-          {/* Gradient overlay */}
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-bg-primary to-transparent"
-          />
-
-          {/* Kapat butonu */}
-          <button
-            className="absolute top-4 right-4 p-2 rounded-xl glass border border-border-subtle text-text-primary hover:text-accent-orange hover:scale-105 hover:border-border-strong transition-all duration-200 cursor-pointer"
+    <AnimatePresence>
+      {isDetailOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[6px]"
             onClick={() => toggleDetail(false)}
+          />
+
+          {/* Panel */}
+          <motion.div
+            initial={{ x: '100%', opacity: 0.95 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0.95 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed top-0 right-0 h-full z-50 flex flex-col glass-strong border-l border-[rgba(255,255,255,0.06)] shadow-premium w-[450px] max-w-full overflow-hidden"
           >
-            <X size={15} />
-          </button>
+            {/* Banner Görseli */}
+            <div className="relative h-56 flex-shrink-0 overflow-hidden select-none">
+              <img
+                src={game.banner_image_url ?? game.cover_image_url ?? ''}
+                alt={game.title}
+                className="w-full h-full object-cover"
+                style={{ filter: 'brightness(0.5)' }}
+              />
+              {/* Gradient Overlay */}
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-[#090a0f] to-transparent"
+              />
 
-          {/* Favori butonu */}
-          <button
-            className={`absolute top-4 left-4 p-2 rounded-xl glass border transition-all duration-200 hover:scale-105 cursor-pointer ${
-              isFavorite ? 'bg-rose-500/20 border-rose-500/40 text-rose-500' : 'border-border-subtle text-white'
-            }`}
-            onClick={async () => {
-              await toggleFavorite(game.id);
-              addToast(isFavorite ? 'Favorilerden çıkarıldı' : 'Favorilere eklendi', 'success');
-            }}
-          >
-            <Heart
-              size={15}
-              fill={isFavorite ? 'currentColor' : 'none'}
-            />
-          </button>
-
-          {/* Başlık overlay */}
-          <div className="absolute bottom-4 left-5 right-5">
-            <div className="flex items-center gap-2 mb-1.5">
-              <PlatformIcon size={12} className="text-text-secondary" />
-              <span className="text-[10px] font-bold tracking-wider uppercase text-text-secondary">
-                {game.platform_name}
-              </span>
-            </div>
-            <h2
-              className="text-xl font-bold font-display text-text-bright leading-tight"
-            >
-              {game.title}
-            </h2>
-          </div>
-        </div>
-
-        {/* İçerik — scrollable */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-
-          {/* OYNA / YÜKLENMEMİŞ butonu */}
-          <button
-            className={`w-full py-3.5 rounded-xl font-bold font-display text-xs tracking-widest flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer text-white shadow-premium ${
-              isInstalled
-                ? 'bg-gradient-to-r from-accent-orange to-accent-orange-hover hover:shadow-[0_8px_25px_var(--accent-orange-glow)] border border-accent-orange/30'
-                : 'bg-gradient-to-r from-accent-teal to-accent-teal-glow hover:shadow-[0_8px_25px_var(--accent-teal-glow)] border border-accent-teal/30'
-            }`}
-            onClick={() => {
-              if (isInstalled) {
-                onLaunch(game);
-              } else {
-                addToast('Oyun kurulu değil. Lütfen önce kurulum yolunu tanımlayın.', 'info');
-              }
-            }}
-          >
-            {isInstalled ? (
-              <>
-                <Play size={14} fill="white" />
-                OYUNU BAŞLAT
-              </>
-            ) : (
-              <>
-                <Download size={14} />
-                YÜKLENMEMİŞ
-              </>
-            )}
-          </button>
-
-          {/* İstatistik kartları */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Toplam süre */}
-            <div className="rounded-2xl p-4 glass border border-border-subtle hover:border-border-strong transition-all duration-300">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Clock size={13} className="text-accent-orange" />
-                <span className="text-[10px] font-bold tracking-wider uppercase text-text-muted">Toplam Süre</span>
-              </div>
-              <p className="text-lg font-bold font-display text-text-bright">
-                {formatPlaytime(game.total_playtime_minutes)}
-              </p>
-            </div>
-
-            {/* Son oynama */}
-            <div className="rounded-2xl p-4 glass border border-border-subtle hover:border-border-strong transition-all duration-300">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Calendar size={13} className="text-accent-teal" />
-                <span className="text-[10px] font-bold tracking-wider uppercase text-text-muted">Son Oynama</span>
-              </div>
-              <p className="text-xs font-semibold text-text-bright mt-0.5">
-                {formatLastPlayed(game.last_played_at)}
-              </p>
-            </div>
-          </div>
-
-          {/* Durum değiştirici */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold tracking-wider uppercase text-text-muted">
-              OYUN DURUMU
-            </label>
-            <div className="relative">
+              {/* Kapat Butonu */}
               <button
-                className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-bg-tertiary border border-border-subtle hover:border-border-strong hover:bg-bg-hover transition-all duration-200 cursor-pointer"
-                onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
+                className="absolute top-4 right-4 p-2 rounded-xl bg-black/40 border border-white/5 text-text-primary hover:text-white hover:border-white/20 transition-all duration-200 cursor-pointer outline-none"
+                onClick={() => toggleDetail(false)}
               >
-                <GameStatusBadge status={game.status as GameStatus} size="md" />
-                <ChevronDown
-                  size={15}
-                  className="text-text-muted transition-transform duration-200"
-                  style={{
-                    transform: statusDropdownOpen ? 'rotate(180deg)' : 'rotate(0)',
-                  }}
+                <X size={14} />
+              </button>
+
+              {/* Favori Butonu */}
+              <button
+                className={`absolute top-4 left-4 p-2.5 rounded-xl border backdrop-blur-md transition-all duration-200 hover:scale-105 cursor-pointer outline-none ${
+                  isFavorite 
+                    ? 'bg-rose-500/15 border-rose-500/30 text-rose-500' 
+                    : 'bg-black/40 border-white/5 text-white'
+                }`}
+                onClick={async () => {
+                  await toggleFavorite(game.id);
+                  addToast(isFavorite ? 'Favorilerden çıkarıldı' : 'Favorilere eklendi', 'success');
+                }}
+              >
+                <Heart
+                  size={13}
+                  fill={isFavorite ? 'currentColor' : 'none'}
                 />
               </button>
 
-              {/* Dropdown menü */}
-              {statusDropdownOpen && (
-                <div
-                  className="absolute top-full left-0 right-0 mt-1.5 rounded-xl overflow-hidden z-10 animate-scale-in glass-strong border border-border-strong shadow-premium"
-                >
-                  {allStatuses.map((status) => {
-                    const isSelected = game.status === status;
-                    return (
-                      <button
-                        key={status}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150 cursor-pointer ${
-                          isSelected ? 'bg-bg-hover text-accent-orange font-semibold' : 'text-text-primary hover:bg-bg-tertiary/60'
-                        }`}
-                        onClick={async () => {
-                          await updateGameStatus(game.id, status);
-                          setStatusDropdownOpen(false);
-                          addToast(`Oyun durumu "${statusLabels[status]}" olarak güncellendi`, 'success');
-                        }}
-                      >
-                        <GameStatusBadge status={status} size="sm" />
-                        <span className="text-xs font-medium">{statusLabels[status]}</span>
-                      </button>
-                    );
-                  })}
+              {/* Başlık Overlay */}
+              <div className="absolute bottom-5 left-6 right-6">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <PlatformIcon size={12} className="text-text-secondary" />
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-text-secondary">
+                    {game.platform_name}
+                  </span>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Kurulum dizini */}
-          {game.install_path && (
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold tracking-wider uppercase text-text-muted">
-                KURULUM DİZİNİ
-              </label>
-              <div
-                className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-bg-tertiary border border-border-subtle"
-              >
-                <HardDrive size={13} className="text-text-muted" />
-                <span className="text-xs truncate flex-1 font-medium text-text-secondary select-all" title={game.install_path}>
-                  {game.install_path}
-                </span>
+                <h2
+                  className="text-lg font-black font-display text-text-bright leading-tight tracking-wide"
+                >
+                  {game.title}
+                </h2>
               </div>
             </div>
-          )}
 
-          {/* Oyun ID bilgisi */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold tracking-wider uppercase text-text-muted">
-              OYUN KİMLİĞİ
-            </label>
-            <div
-              className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-bg-tertiary border border-border-subtle"
-            >
-              <ExternalLink size={13} className="text-text-muted" />
-              <span className="text-xs font-mono font-medium text-text-secondary select-all">
-                {game.platform_name === 'Steam' ? `AppID: ${game.external_game_id}` : game.external_game_id}
-              </span>
+            {/* İçerik */}
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+              {/* Oynat / İndir Düğmesi */}
+              <ActionButton
+                variant="primary"
+                className="w-full py-4 tracking-widest uppercase text-[11px] shadow-[0_0_20px_rgba(249,115,22,0.2)]"
+                onClick={() => {
+                  if (isInstalled) {
+                    onLaunch(game);
+                  } else {
+                    addToast('Oyun kurulu değil. Lütfen önce kurulum yolunu tanımlayın.', 'info');
+                  }
+                }}
+              >
+                {isInstalled ? (
+                  <>
+                    <Play size={13} fill="white" className="text-white" />
+                    OYUNU BAŞLAT
+                  </>
+                ) : (
+                  <>
+                    <Download size={13} />
+                    YÜKLENMEMİŞ
+                  </>
+                )}
+              </ActionButton>
+
+              {/* İstatistikler */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Süre */}
+                <div className="rounded-2xl p-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.08)] transition-all duration-300">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Clock size={12} className="text-orange-500" />
+                    <span className="text-[9px] font-black tracking-wider uppercase text-text-secondary">Toplam Süre</span>
+                  </div>
+                  <p className="text-base font-bold font-display text-text-bright">
+                    {formatPlaytime(game.total_playtime_minutes)}
+                  </p>
+                </div>
+
+                {/* Son Oynama */}
+                <div className="rounded-2xl p-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.08)] transition-all duration-300">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Calendar size={12} className="text-rose-500" />
+                    <span className="text-[9px] font-black tracking-wider uppercase text-text-secondary">Son Oynama</span>
+                  </div>
+                  <p className="text-xs font-bold text-text-bright mt-0.5">
+                    {formatLastPlayed(game.last_played_at)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Durum Değiştirici */}
+              <div className="space-y-2">
+                <label className="text-[9px] font-black tracking-wider uppercase text-text-secondary">
+                  OYUN DURUMU
+                </label>
+                <div className="relative">
+                  <button
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-[rgba(9,10,15,0.6)] border border-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.02)] transition-all duration-200 cursor-pointer outline-none"
+                    onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
+                  >
+                    <GameStatusBadge status={game.status as GameStatus} size="md" />
+                    <ChevronDown
+                      size={14}
+                      className="text-text-secondary transition-transform duration-200"
+                      style={{
+                        transform: statusDropdownOpen ? 'rotate(180deg)' : 'rotate(0)',
+                      }}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {statusDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-0 right-0 mt-1.5 rounded-xl overflow-hidden z-50 glass-strong border border-[rgba(255,255,255,0.08)] shadow-premium"
+                      >
+                        {allStatuses.map((status) => {
+                          const isSelected = game.status === status;
+                          return (
+                            <button
+                              key={status}
+                              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150 cursor-pointer outline-none ${
+                                isSelected ? 'bg-[rgba(255,255,255,0.04)] text-orange-500 font-semibold' : 'text-text-primary hover:bg-[rgba(255,255,255,0.02)]'
+                              }`}
+                              onClick={async () => {
+                                await updateGameStatus(game.id, status);
+                                setStatusDropdownOpen(false);
+                                addToast(`Oyun durumu "${statusLabels[status]}" olarak güncellendi`, 'success');
+                              }}
+                            >
+                              <GameStatusBadge status={status} size="sm" />
+                              <span className="text-xs font-semibold">{statusLabels[status]}</span>
+                            </button>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              {/* Kurulum Yolu */}
+              {game.install_path && (
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black tracking-wider uppercase text-text-secondary">
+                    KURULUM DİZİNİ
+                  </label>
+                  <div
+                    className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[rgba(9,10,15,0.6)] border border-[rgba(255,255,255,0.04)]"
+                  >
+                    <HardDrive size={12} className="text-text-secondary" />
+                    <span className="text-xs truncate flex-1 font-semibold text-text-secondary select-all" title={game.install_path}>
+                      {game.install_path}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Oyun ID Bilgisi */}
+              <div className="space-y-2">
+                <label className="text-[9px] font-black tracking-wider uppercase text-text-secondary">
+                  OYUN KİMLİĞİ
+                </label>
+                <div
+                  className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[rgba(9,10,15,0.6)] border border-[rgba(255,255,255,0.04)]"
+                >
+                  <ExternalLink size={12} className="text-text-secondary" />
+                  <span className="text-xs font-mono font-bold text-text-secondary select-all">
+                    {game.platform_name === 'Steam' ? `AppID: ${game.external_game_id}` : game.external_game_id}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
